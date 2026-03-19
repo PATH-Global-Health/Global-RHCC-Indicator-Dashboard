@@ -1,0 +1,61 @@
+pacman::p_load(tidyverse,lubridate)
+#DRC
+source("~/Library/CloudStorage/Box-Box/MNTD/Projects/RHCC (Rotary)/Dashboard/scripts/drc-compilation.R")
+
+#Mozambique
+moz = read.csv("~/Library/CloudStorage/Box-Box/MNTD/Projects/RHCC (Rotary)/Mozambique/data/rhcc_cc_dat_moz.csv") %>%
+  rename(adm0 = country,
+         rhcc2_m = rhcc2_mal,
+         rhcc2_p = rhcc2_pneum,
+         rhcc2_d = rhcc2_diarr,
+         rhcc3_clinical_u = rhcc3) %>%
+  slice(-c(1,14)) %>%
+  mutate(date = ymd(substr(period,1,10)),
+         adm0 = "MOZ",
+         `RHCC Target` = 280,
+         across(c(rhcc2_m, rhcc2_p, rhcc2_d), round),
+         rhcc7 = round(rhcc7*100),
+         rhcc13 = round(rhcc13*100),
+         rhcc3_clinical_u = 120,
+         rhcc1 = round((30036*71+(23385+1998+12716)*30)/(30036+23385+1998+12716))) #Tete U5 mortality 2022/2023 DHS: 30; Manica U5 mortality 2022/2023 DHS (Manica only): 71 
+
+#Nigeria
+source("~/Library/CloudStorage/Box-Box/MNTD/Projects/RHCC (Rotary)/Dashboard/scripts/nigeria-compilation.R")
+nga = dat_adm0 %>%
+  rename(`RHCC Target` = `RHCC Target (iCCM services)`)
+
+#Zambia
+zam = read.csv("~/Library/CloudStorage/Box-Box/MNTD/Projects/RHCC (Rotary)/Zambia/data/rhcc_cc_dat_zam.csv") %>%
+  rename(adm0 = country,
+         rhcc1.1_d = rhcc1.1_diarr,
+         rhcc1.1_m = rhcc1.1_mal,
+         rhcc1.1_p = rhcc1.1_pneum,
+         rhcc2_p = rhcc2_pneumonia,
+         rhcc2_d = rhcc2_diarrhoea,
+         rhcc2_m = rhcc2_malaria,
+         rhcc11_p = rhcc11_amoxyl,
+         rhcc11_m = rhcc11_mal,
+         rhcc11_d = rhcc11_ors_zinc,
+         rhcc3_clinical = rhcc3_nonclinical,
+         rhcc6_u = rhcc6) %>%
+  mutate(date = ymd(substr(date,1,10)),
+         adm0 = "ZAM",
+         `RHCC Target` = 2086,
+         rhcc1 = round(((38929.23+10629)*47+(25097+77289+18311)*51)/(25097+38929.23+77289+10629+18311)), #Central U5 mortality 2024 DHS: 47; Northern u5 mortality 2024 DHS: 51
+         rhcc3_clinical_f = 511,
+         rhcc3_clinical_m = 888,
+         rhcc4_f = 354,
+         rhcc4_m = 629) %>%
+  group_by(adm0) %>%
+  mutate(rhcc6_u = sum(rhcc6_u, na.rm = T)) %>%
+  ungroup()
+zam[1:4,c(12:17)] = NA
+
+#Consolidate
+dat = nga %>%
+  bind_rows(zam) %>%
+  bind_rows(moz) %>%
+  bind_rows(drc)
+
+rm(list = c('dat_adm0','nga','zam','moz','drc'))
+

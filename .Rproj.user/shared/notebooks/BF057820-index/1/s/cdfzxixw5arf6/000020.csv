@@ -1,0 +1,7 @@
+"0","ggplotly(ggplot(data = dat %>%"
+"0","                  filter(adm0==""DRC"") %>%"
+"0","                  filter(row_number()==1)) + "
+"0","           geom_col(aes(x = rhcc1, y = ""DRC"", fill = ""DRC"")) +"
+"0","           scale_fill_manual(values = ""#FF0000"") +"
+"0","           labs(fill = """", x = ""Under-5 mortality rate"", y = ""DRC"") +"
+"0","           theme_minimal())"

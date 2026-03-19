@@ -1,0 +1,6 @@
+"0","dat %>%"
+"0","  dplyr::select(2:20) %>%"
+"0","  tbl_summary(by = `cycle`, type = list(where(is.numeric) ~ ""continuous2"")) %>%"
+"0","  add_p(pvalue_fun = label_style_pvalue(digits = 1)) %>%"
+"0","  as_gt() %>%"
+"0","  gt::tab_options(table.font.size = 8)"

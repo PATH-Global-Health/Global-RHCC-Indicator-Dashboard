@@ -1,0 +1,1 @@
+"0","ggplotly(bar_plot(hz %>% rename(rhcc4 = rhcc4_u), rhcc4, ""# of CHWs equipped""))"

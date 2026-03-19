@@ -1,0 +1,2 @@
+"0","ggplotly(bar_plot(dat, rhcc10, ""% of CHWs providing iCCM 1 year after initial training"")+"
+"0","           scale_y_continuous(lim = c(0,100), expand = c(0,0)))"

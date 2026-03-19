@@ -1,0 +1,140 @@
+---
+title: "Why does Ellen get sick all the time? Does she have an early-stage autoimmune disease? Does she have long Covid? Is her period the chicken or the egg? (By definition, the egg)"
+author: "Ellen Ferriss"
+date: "2026-03-06"
+output: pdf_document
+---
+
+```{r echo=FALSE}
+pacman::p_load(tidyverse,gtsummary,GGally)
+
+#1 - not at all, 2 - minimal, 3 - mild, 4 - moderate, 5 - severe, 6 - extreme
+dat = data.frame(day = c(23,24,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21),
+                 productivity = c(1,4,4,5,3,4,3,4,2,2,4,1,1,4,5,5,4,1,3,3,1,1,1), #Outcome 
+                 avoidance = c(1,1,1,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1), #Outcome 
+                 relationships = c(1,1,4,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1), #Outcome 
+                 depression = c(1,4,4,6,1,4,4,4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
+                 anxiety = c(4,1,1,5,2,4,3,4,3,4,3,1,3,2,2,3,2,2,3,2,2,2,4),
+                 mood_swing = c(4,4,1,6,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
+                 anger = c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,2,2,3,1,1,1,3),
+                 reduced_interest = c(1,1,4,5,1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1),
+                 diff_concentrating = c(1,4,4,6,4,1,1,4,1,1,4,2,4,2,5,5,4,2,4,4,2,2,1),
+                 lethargy = c(4,5,3,5,4,4,4,4,3,4,6,3,4,4,5,5,4,3,2,5,2,2,3),
+                 appetite = c(1,4,4,6,4,4,3,3,1,1,1,2,1,1,1,1,1,1,1,3,1,1,1),
+                 sleep_disturbance = c(1,4,1,6,4,1,1,4,1,3,6,2,5,5,4,4,4,4,3,3,4,3,4),
+                 overwhelmed = c(1,1,1,5,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,3),
+                 swelling = c(3,3,3,2,2,1,1,1,1,1,1,1,1,1,1,1,1,3,3,3,3,4,4),
+                 headache = c(4,4,2,4,2,2,2,2,1,2,2,4,2,3,2,2,4,3,4,2,1,1,3),
+                 pain = c(4,3,2,2,2,2,2,2,2,1,1,1,3,3,3,2,2,2,2,2,2,2,2),
+                 infection = c(1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                 spotting = c(0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+                 cycle = c(4,4,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3) %>% as.factor()) %>%
+  mutate(sine = sin(2*pi*day/28),
+         menses = c(0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+```
+
+# Primary outcomes
+
+Reduction of productivity or inefficiency at work, school, home, or in daily routine was evaluated as a continuous variable with values ranging from 1 (not at all) to 6 (severe). Avoidance of or less participation in hobbies or social activities and interference with relationships with others could not be evaluated due to infrequent self-reported impairment of any severity.
+
+## Secondary outcomes
+
+Symptom severity was compared between menstrual cycle weeks using Kruskal-Wallis rank sum tests.
+
+## Exposures
+
+Exposures included continuous variables with score of 1 (not at all) to 6 (severe) for:
+
+1.  Feeling depressed, sad, "down", "blue" or hopeless, worthless, or guilty
+
+2.  Feeling anxious, tense, "keyed up" or "on edge"
+
+3.  Presence of mood swings (ie, suddenly feeling sad or tearful) or sensitivitivy to rejection/feelings easily hurt
+
+4.  Anger or irritability
+
+5.  Reduced interest in usual activities (work, school, friends, hobbies)
+
+6.  Difficulty concentrating
+
+7.  Feeling lethargic, tired, fatigued, lack of energy
+
+8.  Increased or decreased appetite, overeating, or cravings for specific foods
+
+9.  Increased sleep, napping, difficulty get up when intended, or difficulty getting to sleep or staying asleep the night prior
+
+10. Feeling overwhelmed or unable to cope, out of control
+
+11. Breast tenderness, breast swelling, bloating, weight gain,
+
+12. Headache
+
+13. Joint or muscle pain
+
+Self-reported infection was evaluated as a binary indicator variable. Cycle week was modeled as a nominal factor variable.
+
+# Statistical Analysis
+
+Risk factor analysis was conducted using a linear regression model. Forward stepwise regression was used to determine variable inclusion, given the small sample size, lack of heterogeneity among certain risk factors, and multicollinearity of risk factors. Cycle week was included a priori. Additional variable inclusion was based on model fit using the AIC. Analysis was conducted in R version 4.5.1.
+
+# Results
+
+## Symptom correlation
+
+```{r echo=FALSE, warning=FALSE}
+ggcorr(dat %>% 
+         dplyr::select(2:22), hjust = 0.75, size = 2, color = "grey50", layout.exp = 1)
+```
+
+## Predictors of reduced productivity
+
+Depression and lethargy were the only statistically significant predictor of reduced productivity.
+
+```{r echo = F}
+dat2 = dat %>%
+  mutate(across(c(2:17), ~.-1))
+  
+formula = "productivity ~ cycle"
+initial_model = lm(formula, data = dat2)
+AIC = AIC(initial_model)
+results = summary(initial_model)$coefficients
+
+for(covariate in names(dat2)[c(5:18)]){
+  model = lm(as.formula(paste0(formula, " + `", covariate, "`")),
+             data = dat2)
+  
+  if(AIC(model)<AIC) formula = paste0(formula , " + `", covariate, "`") #If the covariate reduces the AIC, update the model
+  if(AIC(model)<AIC) results = summary(model)$coefficients #Save the new model results
+
+  if(AIC(model)<AIC) AIC = AIC(model) #Update the QIC
+}
+
+table = results %>% 
+  as.data.frame() %>% 
+  mutate(`95% CI` = paste(sprintf("%.2f", round(Estimate-1.96*`Std. Error`,2)),
+                    sprintf("%.2f", round(Estimate+1.96*`Std. Error`,2)), sep = ", ")) %>%
+  rename(`p-value` = `Pr(>|t|)`) %>%
+  dplyr::select(1,5,4,-2,-3) %>%
+  mutate(across(c(1,3), ~round(.,2)))
+
+# rownames(admissions_table) = c("5% increase in the percentage of cases identified through mCCM", "5% increase in the overall percentage of cases identified through CCM from 2019-2023 by district","10-mm increase in 1-month lagged rainfall", "2020", "2021", "2022", "2023", "Log-unit increase in monthly incidence per 1,000 pop", "10% increase in proportion of population that's urban","10% increase in LLIN coverage", "10% increase in IRS coverage", "RTS,S administered")
+
+kableExtra::kable(table, caption = "Associations of productivity with symptom scores")
+```
+
+## Symptoms and outcomes by menstrual cycle week
+
+Decreased appetite and increased depression were positively correlated with menstruation, whereas infection, mood swings, swelling, and headache scores were higher during menstrual cycle week 4. Changes in productivity were not significantly different across the menstrual cycle.
+
+```{r echo = F}
+dat %>%
+  dplyr::select(2:20) %>%
+  tbl_summary(by = `cycle`, type = list(where(is.numeric) ~ "continuous2")) %>%
+  add_p(pvalue_fun = label_style_pvalue(digits = 1)) %>%
+  as_gt() %>%
+  gt::tab_options(table.font.size = 8)
+```
+
+# **Limitations**
+
+Hormone therapy was initiated 5 days into the first menstrual cycle week 1, potentially limiting exchangeability between the first week 4/week 1 observations and subsequent week 4/week 1 observations. In addition, confounders included a multi-day family medical emergency during week 1 of the second menstrual cycle (first week 1), which resulted in atypical sleeping, eating, anxiety, and depression, and possibly, post-exertional malaise the following week.
