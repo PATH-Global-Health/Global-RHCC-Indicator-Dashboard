@@ -98,7 +98,7 @@ ggplotly(horizontal_bar_plot(dat, rhcc1, "Under-5 mortality rate"))
 ### **RHCC1.1** - Under-5 *Malaria* Hospitalizations per 1,000
 
 ```{r}
-ggplotly(line_plot(dat, date, rhcc1.1_m, "Under-5 malaria hospitalizations per 1,000 children under 5"))
+ggplotly(line_plot(dat, date, rhcc1.1_m, "Under-5 malaria hospitalization rate"))
 ```
 
 ## Row
@@ -160,21 +160,17 @@ ggplotly(
 ```{r}
 ggplotly(ggplot(dat %>%
                   dplyr::select(-rhcc4) %>%
-                  filter(!is.na(rhcc4_f)|!is.na(rhcc4_m)|!is.na(rhcc4_u)) %>%
+                  filter(!is.na(rhcc4_f)|!is.na(rhcc4_m)) %>%
                   group_by(adm0) %>%
                   filter(row_number()==n()) %>%
                   ungroup() %>%
-                  pivot_longer(cols = c(rhcc4_f, rhcc4_m, rhcc4_u), names_to = "CHW", names_prefix = "rhcc4_", values_to = "rhcc4") %>%
-            mutate(CHW = factor(CHW, levels = c("f", "m", "u"), labels = c("Female", "Male", "Unknown")))) + 
-    geom_bar(data = . %>% filter(CHW %in% c("Female", "Male"), adm0!="DRC"),
-             aes(y = rhcc4, x = adm0, fill = adm0, alpha = CHW),
-                 position = "stack", stat = "identity", show.legend = F) +
-    geom_bar(data = . %>% filter(CHW=="Unknown", adm0=="DRC"),
-             aes(y = rhcc4, x = adm0, fill = adm0, alpha = CHW),
-                 position = "stack", stat = "identity", show.legend = F) +
+                  pivot_longer(cols = c(rhcc4_f, rhcc4_m), names_to = "CHW", names_prefix = "rhcc4_", values_to = "rhcc4") %>%
+            mutate(CHW = factor(CHW, levels = c("f", "m"), labels = c("Female", "Male")))) + 
+    geom_bar(aes(y = rhcc4, x = adm0, fill = adm0, alpha = CHW),
+             position = "stack", stat = "identity", show.legend = F) +
     geom_point(aes(y = `RHCC Target`, x = adm0, fill = adm0, alpha = "Target"), color = NA) + 
     scale_fill_manual(values = c(palette)) +
-    scale_alpha_manual(values = c("Female" = 1, "Unknown" = 1, "Male" = 0.7)) +
+    scale_alpha_manual(values = c("Female" = 1, "Male" = 0.7)) +
     labs(fill = "Country", x ="Country", y = "Total CHWs equipped", alpha = "CHW gender") +
     theme_minimal())
 ```
@@ -192,19 +188,21 @@ ggplotly(bar_plot(dat, rhcc5, "# of CHWs per 1,000 children under 5") +
 
 ```{r}
 ggplotly(ggplot(dat %>%
-                  filter(!is.na(rhcc6_f)|!is.na(rhcc6_m)|!is.na(rhcc6_u)) %>%
+                  filter(!is.na(rhcc6_f)|!is.na(rhcc6_m)) %>% #|!is.na(rhcc6_u)) %>%
                   group_by(adm0) %>%
                   filter(row_number()==n()) %>%
                   ungroup() %>%
-                  pivot_longer(cols = c(rhcc6_f, rhcc6_m, rhcc6_u), names_to = "Supervisor", names_prefix = "rhcc6_", values_to = "rhcc6") %>%
-            mutate(Supervisor = factor(Supervisor, levels = c("f", "m", "u"), 
-                                       labels = c("Female", "Male", "Unknown")))) + 
+                  pivot_longer(cols = c(rhcc6_f, rhcc6_m#, rhcc6_u
+                                        ), names_to = "Supervisor", names_prefix = "rhcc6_", values_to = "rhcc6") %>%
+            mutate(Supervisor = factor(Supervisor, levels = c("f", "m"#, "u"
+                                                              ), labels = c("Female", "Male"#, "Unknown"
+                                                                            )))) + 
     geom_bar(data = . %>% filter(Supervisor %in% c("Female", "Male"), adm0!="ZAM"),
              aes(y = rhcc6, x = adm0, fill = adm0, alpha = Supervisor),
                  position = "stack", stat = "identity", show.legend = F) +
-    geom_bar(data = . %>% filter(Supervisor=="Unknown", adm0=="ZAM"),
-             aes(y = rhcc6, x = adm0, fill = adm0, alpha = Supervisor), 
-             position = "stack", stat = "identity", show.legend = F) +
+    #geom_bar(data = . %>% filter(Supervisor=="Unknown", adm0=="ZAM"),
+    #         aes(y = rhcc6, x = adm0, fill = adm0, alpha = Supervisor),
+    #             position = "stack", stat = "identity", show.legend = F) +
     scale_fill_manual(values = c(palette)) +
     scale_alpha_manual(values = c("Female" = 1, "Male" = 0.7, "Unknown" = 1)) +
     labs(x ="Country", y = "Total Supervisors Trained", alpha = "Supervisor gender",fill = "Country") +
@@ -237,8 +235,13 @@ ggplotly(line_plot(dat %>% filter(date>"2025-05-01"), date, rhcc9, "% of sick ch
 ### **RHCC9.1** - % of Sick Children Referred by CHWs Who are Received at Referral Facility
 
 ```{r}
-ggplotly(line_plot(dat, date, rhcc9.1, "% of referrals received")+
-           scale_y_continuous(lim = c(0,100), expand = c(0,0)))
+#ggplotly(line_plot(dat, date, rhcc9.1, "% of referrals received")+
+#           scale_y_continuous(lim = c(0,100), expand = c(0,0)))
+ggplot() +
+  annotate("label", x = 1, y = 1, 
+           label = "Data Collection/Processing Underway",
+           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
+  theme_void()
 ```
 
 ## Row
@@ -316,7 +319,12 @@ ggplotly(bar_time_plot(dat, rhcc13, "% on time"))
 ### **RHCC14** - % of Accurate Reports Submitted
 
 ```{r}
-ggplotly(bar_time_plot(dat, rhcc14, "% accurate"))
+#ggplotly(bar_time_plot(dat, rhcc14, "% accurate"))
+ggplot() +
+  annotate("label", x = 1, y = 1, 
+           label = "Data Collection/Processing Underway",
+           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
+  theme_void()
 ```
 
 ### **RHCC15** - % of Complete Reports Submitted
@@ -448,580 +456,6 @@ ggplot() +
 ```
 
 ### **RHCC27** - \# of RHCC Districts Reporting on a Community Scorecard
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-# DRC
-
-```{r setup_drc, includ = F}
-#Load data
-palette = c("salmon2","red3","salmon4","darksalmon","red2", "pink2","brown1","red4", "orangered", "orangered3","pink3", "brown2","pink4","brown3","salmon3","salmon1","brown4","pink1")
-
-line_plot = function(kpi, ylab){
-  ggplot(data = hz %>% filter(date>="2025-12-01")) + 
-    geom_line(aes(x = date, y = {{kpi}}, color = `Health Zone`), size = 1.5) +
-    geom_point(aes(x = date, y = {{kpi}}, color = `Health Zone`), size = 1.5) +
-    scale_color_manual(values = palette) +
-    scale_x_date(date_breaks = "1 month", limits = c(as.Date("2025-12-01"),as.Date("2026-02-01")), date_labels =  "%m/%Y") +
-    theme_minimal() +
-    theme(strip.text = element_text(size = 10),
-          axis.text.x = element_text(size = 6),
-          plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm")) +
-    labs(color = "Health Zone", x ="Date", y = ylab)
-}
-
-bar_plot = function(dat, kpi, ylab){
-  ggplot(dat %>%
-           filter(!is.na({{kpi}})) %>%
-           group_by(`Health Zone`) %>%
-           filter(row_number()==n())) + 
-    geom_col(aes(x = `Health Zone`, y = {{kpi}}, fill = `Health Zone`), 
-             position = position_dodge2()) +
-    scale_fill_manual(values = palette) +
-    labs(fill = "Health Zone", x = "Health Zone", y = ylab) +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45))
-}
-
-horizontal_bar_plot = function(dat, kpi, xlab){
-  ggplot(dat %>%
-           filter(!is.na({{kpi}})) %>%
-           group_by(`Health Zone`) %>%
-           filter(row_number()==n())) + 
-    geom_col(aes(x = {{kpi}}, y = `Health Zone`, fill = `Health Zone`), 
-             position = position_dodge2()) +
-    scale_fill_manual(values = palette) +
-    labs(fill = "Health Zone", x = xlab, y = "Health Zone") +
-    theme_minimal()
-}
-
-dumbbell_plot = function(dat, kpi, ylab){
-  ggplot(dat %>%
-           filter(!is.na({{kpi}}), {{kpi}}!=0) %>%
-           group_by(`Health Zone`) %>%
-           mutate(survey = as.factor(row_number())) %>%
-           ungroup()) + 
-    geom_point(aes(y = `Health Zone`, x = {{kpi}}, color = `Health Zone`, alpha = survey), size = 4) +
-    geom_line(aes(y = `Health Zone`, x = {{kpi}}, group = `Health Zone`)) +
-    scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
-    scale_color_manual(values = palette) +
-    labs(fill = "Health Zone", x ="%", y = ylab, alpha = "Survey #", color = "Health Zone") +
-    theme_minimal() +
-    xlim(c(0,100))
-}
-```
-
-## Row
-
-### **RHCC1** - Under-5 Mortality per 1,000 Live Births. Values are from DRC DHS 2023/2024.
-
-```{r}
-ggplotly(ggplot(data = dat %>%
-                  filter(adm0=="DRC") %>%
-                  filter(row_number()==1)) + 
-           geom_col(aes(x = rhcc1, y = "DRC", fill = "DRC")) +
-           scale_fill_manual(values = "#FF0000") +
-           labs(fill = "", x = "Under-5 mortality rate", y = "") +
-           theme_minimal())
-```
-
-### **RHCC1.1** - Under-5 Hospitalizations per 1,000 Under 5
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC2** - % of *Malaria* Cases Managed in the Community
-
-```{r}
-ggplotly(line_plot(rhcc2_m, "% of malaria cases managed in community"))
-```
-
-### **RHCC2** - % of *Pneumonia* Cases Managed in the Community
-
-```{r}
-ggplotly(line_plot(rhcc2_p, "% of pneumonia cases managed in community"))
-```
-
-### **RHCC2** - % of *Diarrhoea* Cases Managed in the Community
-
-```{r}
-ggplotly(line_plot(rhcc2_d, "% of diarrhoea cases managed in community"))
-```
-
-## Row
-
-### **RHCC2.1** - % of Children with Fever Who Received an RDT in RHCC Communities
-
-```{r}
-ggplotly(line_plot(rhcc2.1, "% of fever cases receving RDT in community") +
-           scale_y_continuous(lim = c(0,100)))
-```
-
-### **RHCC2.2** - % of Children Testing RDT+ in RHCC Communities
-
-```{r}
-ggplotly(line_plot(rhcc2.2, "% of fever cases RDT+ in community") +
-           scale_y_continuous(lim = c(0,100)))
-```
-
-### **RHCC2.3** - % of RDT+ Children Who Receive Treatment According to Protocol in RHCC Communities
-
-```{r}
-ggplotly(line_plot(rhcc2.3, "% of confirmed cases receiving ACT in community") +
-           scale_y_continuous(lim = c(0,100)))
-```
-
-## Row
-
-### **RHCC2.4** - % of Children with Diarrhoea Treated with Low Osmolar ORS and Zinc in RHCC Communities
-
-```{r}
-ggplotly(line_plot(rhcc2.4, "% of diarrhoea cases treated in community") +
-           scale_y_continuous(lim = c(0,100)))
-```
-
-### **RHCC2.5** - % of Children with Pneumonia Treated with Antibiotics (Amoxicillin DT) in RHCC Communities
-
-```{r}
-ggplotly(line_plot(rhcc2.5, "% of pneumonia cases treated in community") +
-           scale_y_continuous(lim = c(0,100)))
-```
-
-### **RHCC2.6** - % of Cases (Malaria, Pneumonia, Diarrhoea, or Danger Signs) Treated by CHWs During Home Visit According to National Guidelines
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row {data-height="60"}
-
-## Row
-
-### **RHCC3** - \# of CHWS Trained in iCCM.
-
-```{r}
-ggplotly(
-   ggplot(hz %>%
-            filter(!is.na(rhcc3_clinical_f), !is.na(rhcc3_clinical_m)) %>%
-            group_by(`Health Zone`) %>%
-            filter(row_number()==n()) %>%
-            pivot_longer(cols = c(rhcc3_clinical_f, rhcc3_clinical_m), names_to = "CHW", names_prefix = "rhcc3_clinical_", values_to = "rhcc3") %>%
-            mutate(CHW = factor(CHW, levels = c("f", "m"), labels = c("Female", "Male")))) +
-    geom_bar(aes(y = rhcc3, x = `Health Zone`, fill = `Health Zone`, alpha = CHW),
-             position = "stack", stat = "identity") +
-    geom_point(aes(y = rhcc3_target, x = `Health Zone`, fill = `Health Zone`, alpha = "Target"), color = NA) + 
-    scale_fill_manual(values = c(palette)) +
-    scale_alpha_manual(values = c("Female" = 1, "Male" = 0.7, "Target" = 0.7)) +
-    labs(fill = "Health Zone", x ="Health Zone", y = "# CHWs trained", alpha = "CHW gender") +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45))
-)
-```
-
-## Row 
-
-### **RHCC4** - \# of CHWs Equipped According to National Guidelines.
-
-```{r}
-ggplotly(bar_plot(hz, rhcc4, "# of CHWs equipped"))
-```
-
-### **RHCC5** - \# of Clinical CHWs Trained and Deployed for iCCM per 1,000 children under-five in RHCC areas. Cumulative figures are shown.
-
-```{r}
-#ggplotly(bar_plot(dat_state, rhcc5, "# of CHWs per 1,000 children under 5"))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC6** - \# of CHW Supervisors Trained. Cumulative figures are shown.
-
-```{r}
-ggplotly(
-   ggplot(hz %>%
-            filter(!is.na(rhcc6_f), !is.na(rhcc6_m)) %>%
-            group_by(`Health Zone`) %>%
-            filter(row_number()==n()) %>%
-            pivot_longer(cols = c(rhcc6_f, rhcc6_m), names_to = "Gender", names_prefix = "rhcc6_", values_to = "rhcc6") %>%
-            mutate(Gender = factor(Gender, levels = c("f", "m"), labels = c("Female", "Male")))) +
-    geom_bar(aes(y = rhcc6, x = `Health Zone`, fill = `Health Zone`, alpha = Gender),
-             position = "stack", stat = "identity") +
-    scale_fill_manual(values = c(palette)) +
-    scale_alpha_manual(values = c("Female" = 1, "Male" = 0.7)) +
-    labs(fill = "Health Zone", x ="Health Zone", y = "Total supervisors trained", alpha = "Gender") +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45))
-)
-```
-
-## Row
-
-### **RHCC7** - % of CHWs Who Received At Least One Supervisory Contact in the Prior Month
-
-```{r}
-# ggplotly(line_plot(rhcc7, "% of CHWs with supervisory contact during prior month")+
-#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC8** - % of CHWs Who Correctly Count Respiratory Rate to Diagnose ARI
-
-```{r}
-# ggplotly(line_plot(rhcc8, "# of CHWs correctly counting respiratory rate")+
-#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC9** - % of Sick Child Cases Recommended for Referral by CHW
-
-```{r}
-# ggplotly(line_plot(rhcc9, "% of sick child cases referred") +
-#            scale_y_continuous(lim = c(-2,50)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC9.1** - % of Sick Children Referred by CHWs Who Are Received at Referral Facility
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC10** - % of CHWs Trained in iCCM Who Are Providing iCCM 1 Year After Initial Training
-
-```{r}
-#ggplotly(bar_plot(dat_state, rhcc10, "% of CHWs providing iCCM 1 year after initial training")+
- #          scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC11** - % of Health Facilities with No Stock-outs of Key *Malaria* Medicines and Diagnostics in the Past Month
-
-```{r}
-#ggplotly(line_plot(rhcc11_m, "% of health facilities with no stock-outs") +
- #          scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC11** - % of Health Facilities with No Stock-outs of Key *Pneumonia* Medicines and Diagnostics in the Past Month
-
-```{r}
-#ggplotly(line_plot(rhcc11_p, "% of health facilities with no stock-outs") +
- #          scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC11** - % of Health Facilities with No Stock-outs of Key *Diarrhoea* Medicines and Diagnostics in the Past Month
-
-```{r}
-#ggplotly(line_plot(rhcc11_d, "% of health facilities with no stock-outs") +
- #          scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC12** - % of CHWs with No Stock-outs of Key *Malaria* Medicines and Diagnostics in the Past Month
-
-```{r}
-# ggplotly(line_plot(rhcc12_m, "% of CHWs with no stock-outs") +
-#            scale_y_continuous(lim = c(0,100)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC12** - % of CHWs with No Stock-outs of Key *Pneumonia* Medicines and Diagnostics in the Past Month
-
-```{r}
-# ggplotly(line_plot(rhcc12_p, "% of CHWs with no stock-outs") +
-#            scale_y_continuous(lim = c(0,100)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC12** - % of CHWs with No Stock-outs of Key *Diarrhoea* Medicines and Diagnostics in the Past Month
-
-```{r}
-# ggplotly(line_plot(rhcc12_d, "% of CHWs with no stock-outs") +
-#            scale_y_continuous(lim = c(0,100)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC12.9** - # of expected reports
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC13** - % of Reports Submitted on Time
-
-```{r}
-#line_plot(rhcc13, "% on time")
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC14** - % of Accurate Reports Submitted
-
-```{r}
-#line_plot(rhcc14, "% on time")
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC15** - % of Complete Reports Submitted
-
-```{r}
-#line_plot(rhcc15, "% on time")
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row {data-height="60"}
-
-**Caregivers of children under-5 were surveyed in the community at baseline and endline to ascertain their knowledge of iCCM services, the location of their CHW, and warning signs of childhood illnesses that necessitated immediate medical attention**
-
-## Row
-
-### **RHCC16** - % of Caregivers Aware of iCCM Services
-
-```{r}
-#ggplotly(dumbbell_plot(dat_state, rhcc16, "% of caregivers aware of iCCM services"))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC17** - % of Caregivers Who Know the Location of Their CHW
-
-```{r}
-#ggplotly(dumbbell_plot(dat_state, rhcc17, "% of caregivers who know CCM location"))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC18** - % of Caregivers Who Know Two or More Signs of Childhood Illness That Require Immediate Assessment and, if Appropriate, Treatment
-
-```{r}
-#ggplotly(dumbbell_plot(dat, rhcc18, "% of caregivers who know warning signs"))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC19** - \# of Rotary Volunteers Engaged
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC20** - \# of Rotary Volunteer Hours Invested in Services, Activities, and Service Projects
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC21** - \# of Rotary Entities Involved in the Country Program
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC22** - \# of Formal Partnerships Established
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC24** - \# of Rotary Members Positioned in Local Decision Making Groups or Advisory Bodies
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC23** - \# of Advocacy Activities
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC25** - \# of Advocacy Activities Covered by Media
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC28** - # of Advocacy Sessions Carried Out Nationally to Promote RHCC Sustainability
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC26** - \# of Rotary Members Trained on Use of a Community Scorecard
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC27** - \# of RHCC Districts Reporting on a Community Scorecard
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-
-## Row
-
-### **RHCC29** - # of Quarterly Monitoring Meetings with Implementing Partners and the Ministry Conducted at National Level
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC30** - # of Quarterly Monitoring Missions Conducted at Provincial Level
 
 ```{r}
 ggplot() +
@@ -1392,6 +826,8 @@ ggplotly(rhcc7_plot)
 
 ```
 
+## Row 8
+
 ### **RHCC8** - % of CHWs Who Correctly Count Respiratory Rate to Diagnose ARI
 
 ```{r}
@@ -1402,8 +838,6 @@ ggplot() +
   theme_void()
 ```
 
-## Row 8
-
 ### **RHCC9** - % of Sick Child Cases Recommended for Referral by CHW
 
 ```{r}
@@ -1411,16 +845,6 @@ ggplot() +
   annotate("label", x = 1, y = 1,
            label = "Data Collection/Processing Underway",
            fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC9.1** - % of Sick Children Referred by CHWs Who Are Received at Referral Facility
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
   theme_void()
 ```
 
@@ -1859,6 +1283,10 @@ ggplotly(line_plot(rhcc12_d, "% of CHWs with no stock-outs") +
            scale_y_continuous(lim = c(0,100)))
 ```
 
+## Row {data-height="30"}
+
+**The percentage of reports submitted on time, the percentage accurate, and the percentage complete during the most recent reported period are shown.**
+
 ## Row
 
 ### **RHCC13** - % of Reports Submitted on Time
@@ -1911,104 +1339,6 @@ ggplotly(dumbbell_plot(dat_state, rhcc17, "% of caregivers who know CCM location
 
 ```{r}
 #ggplotly(dumbbell_plot(dat_state, rhcc18, "% of caregivers who know warning signs"))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC19** - \# of Rotary Volunteers Engaged
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC20** - \# of Rotary Volunteer Hours Invested in Services, Activities, and Service Projects
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC21** - \# of Rotary Entities Involved in the Country Program
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC22** - \# of Formal Partnerships Established
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC24** - \# of Rotary Members Positioned in Local Decision Making Groups or Advisory Bodies
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC23** - \# of Advocacy Activities
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC25** - \# of Advocacy Activities Covered by Media
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC26** - \# of Rotary Members Trained on Use of a Community Scorecard
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC27** - \# of RHCC Districts Reporting on a Community Scorecard
-
-```{r}
 ggplot() +
   annotate("label", x = 1, y = 1, 
            label = "Data Collection/Processing Underway",
@@ -2082,7 +1412,7 @@ ggplotly(rhcc1_mort_plot)
 
 ## Row
 
-### **RHCC1.1** - Under-5 Hospitalizations per 1,000 Under 5
+### **RHCC1.1** - Under-5 Hospitalizations per 1,000 Under 5 Population
 
 ```{r, message=FALSE, warning=FALSE}
 # rhcc1_hosp_plot = rhcc1_hosp %>%
