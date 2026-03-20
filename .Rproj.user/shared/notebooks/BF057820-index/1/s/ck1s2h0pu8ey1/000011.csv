@@ -1,0 +1,2 @@
+"0","ggplotly(bar_plot(dat, rhcc19, ""# of volunteers engaged"") +"
+"0","           scale_y_continuous(lim = c(0,180), expand = c(0,0)))"

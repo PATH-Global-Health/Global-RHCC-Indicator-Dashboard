@@ -1,5 +1,0 @@
-"0","ggplot() +"
-"0","  annotate(""label"", x = 1, y = 1, "
-"0","           label = ""Data Collection/Processing Underway"","
-"0","           fill = ""#ffe178"", color = ""black"", size = 6, label.padding = unit(1, ""lines"")) +"
-"0","  theme_void()"

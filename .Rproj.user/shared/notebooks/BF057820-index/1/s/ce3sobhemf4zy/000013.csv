@@ -1,0 +1,2 @@
+"0","ggplotly(bar_plot(dat, rhcc26, ""# of Rotary members trained on use\nof a Community Scorecard"") +"
+"0","           scale_y_continuous(lim = c(0,80), expand = c(0,0)))"

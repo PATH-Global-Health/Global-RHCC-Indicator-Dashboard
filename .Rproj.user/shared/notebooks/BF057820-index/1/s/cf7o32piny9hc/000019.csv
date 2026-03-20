@@ -1,0 +1,3 @@
+"0","ggplotly(bar_plot(dat, rhcc20, ""# of volunteer hours contributed"") +"
+"0","           scale_y_continuous(lim = c(0,8000), expand = c(0,0)) +    "
+"0","           scale_x_discrete(expand = c(0.6,0.6)))"
