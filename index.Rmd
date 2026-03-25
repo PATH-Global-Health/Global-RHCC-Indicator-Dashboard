@@ -183,7 +183,7 @@ ggplotly(ggplot(dat %>%
 
 ```{r}
 ggplotly(bar_plot(dat, rhcc5, "# of CHWs per 1,000 children under 5") +
-           scale_y_continuous(lim = c(0,5), expand = c(0,0)))
+           scale_y_continuous(lim = c(0,8), expand = c(0,0)))
 ```
 
 ## Row
@@ -2101,6 +2101,9 @@ rhcc1_hosp_monthly <- read_csv("data/clean/zambia/rhcc1_hosp_monthly.csv")
 #RHCC2 summary dataset
 rhcc2_plotting_dat <- read_csv("data/clean/zambia/rhcc2_u5.csv")
 
+#RHCC5
+deployment_dat <- read_csv("data/clean/zambia/rhcc5.csv")
+
 #RHCC training datasets 
 training_data_grp_march <- read_csv("data/clean/zambia/training_data_summary_march26.csv")
 
@@ -2120,7 +2123,8 @@ palette = pathcolors[c(1,2,5,6,8)]
 cols = c("Chilubi" = pathcolors$DkTeal, "Chisamba" = pathcolors$Purple, "Kasama" = pathcolors$PtlTeal,
          "Luwingu" = pathcolors$PtlGreen, "Ngabwe" = pathcolors$Green)
 
-cols2 = c("Diarrhoea - non-bloody" = pathcolors$DkTeal , "Malaria" = pathcolors$PtlTeal, "Pneumonia" = pathcolors$Green)
+cols2 = c("Chilubi" = pathcolors$DkTeal, "Mungwi" = "royalblue4", "Chisamba" = pathcolors$Purple, "Kasama" = pathcolors$PtlTeal,
+         "Luwingu" = pathcolors$PtlGreen, "Ngabwe" = pathcolors$Green)
 ```
 
 ## Row
@@ -2268,20 +2272,6 @@ ggplotly(rhcc2_plot_diarrhoea)
 ### **RHCC3** - \# of CHWS Trained in iCCM
 
 ```{r}
-# ggplotly(training_data_grp %>%
-#   pivot_longer(cols = male_chws_trained:female_chws_equipped, names_to = "stat", values_to = "count") %>%
-#   filter(grepl("trained", stat) == TRUE) %>%
-#   mutate(stat = if_else(grepl("female", stat) == TRUE, "Female CHWs", "Male CHWs")) %>%
-#   ggplot() +
-#   geom_col(aes(x = district, y = count, fill = stat),
-#            position = "dodge") +
-#   scale_fill_manual(values = c(pathcolors$PtlGreen, pathcolors$PtlTeal),
-#                     labels = c("female_chws_trained" = "Female CHWs",
-#                                "male_chws_trained" = "Male CHWs")) +
-#   theme_minimal() +
-#   labs(x = "District", y = "# CHWs Trained"))
-
-
 ggplotly(training_data_grp_march %>%
   filter(district != "Mpika") %>%
   pivot_longer(cols = male_chws_trained:female_chws_equipped, names_to = "stat", values_to = "count") %>%
@@ -2292,7 +2282,7 @@ ggplotly(training_data_grp_march %>%
                              stat=="male_chws_trained" ~ "Male CHWs")) %>%
   ggplot() +
   geom_col(aes(x = district, y = count, fill = district, alpha = rhcc3)) +
-  scale_fill_manual(values = cols) +
+  scale_fill_manual(values = cols2) +
   scale_alpha_manual(values = c(1.0, 0.5)) +
   theme_bw() +
   labs(x = "District", y = "# CHWs trained", alpha = "CHW gender",
@@ -2323,7 +2313,8 @@ rhcc3.1 <- training_data_grp_march %>%
                                  grepl("Chisamba", district) == TRUE ~ 346,
                                  grepl("Ngabwe", district) == TRUE ~ 94,
                                  grepl("Luwingu", district) == TRUE ~ 226,
-                                 grepl("Chilubi", district) == TRUE ~ 241)) %>%
+                                 grepl("Chilubi", district) == TRUE ~ 241,
+                                 grepl("Mungwi", district) == TRUE ~ 432)) %>%
   rbind(all_zam) %>%
   mutate(pct_trained = round(chws_trained/target_chws * 100),
          pct_trained = if_else(pct_trained >= 100, 100, pct_trained)) %>%
@@ -2354,7 +2345,7 @@ rhcc4b = training_data_grp_march %>%
   summarise(count = sum(count, na.rm = TRUE)) %>%
   ggplot() +
   geom_col(aes(x = district, y = count, fill = district, alpha = rhcc4)) +
-  scale_fill_manual(values = cols) +
+  scale_fill_manual(values = cols2) +
   scale_alpha_manual(values = c(1.0, 0.5),
                      labels = c("female_chws_equipped" = "Female CHWs",
                                "male_chws_equipped" = "Male CHWs")) + 
@@ -2379,7 +2370,7 @@ ggplotly(training_data_grp_march %>%
            ggplot() +
            geom_col(aes(x = district, y = pct_equipped, fill = district),
                     position = "dodge") +
-           scale_fill_manual(values = cols) +
+           scale_fill_manual(values = cols2) +
            theme_minimal() +
            labs(x = "District", y = "% CHWs equipped", fill = "District"))
 ```
@@ -2389,14 +2380,12 @@ ggplotly(training_data_grp_march %>%
 ### **RHCC5** - \# of CHWs Trained and Deployed for iCCM per 1,000 children under-five in RHCC areas
 
 ```{r}
-# ggplotly(bar_plot(dat, rhcc5_n/rhcc5_d*1000, "# of CHWs per 1,000 children under 5") +
-#            scale_y_continuous(lim = c(0,15), expand = c(0,0)))
-
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(deployment_dat %>%
+  ggplot() +
+  geom_col(aes(x = district, y = rhcc5_u5, fill = district)) +
+  scale_fill_manual(values = cols2) +
+  theme_minimal() +
+  labs(x = "District", y = "# of CHWs per 1,000 children under 5", fill = "District"))
 ```
 
 ### **RHCC6** - \# of CHW Supervisors Trained
@@ -2412,7 +2401,7 @@ ggplotly(training_data_grp_march %>%
   ggplot() +
   geom_col(aes(x = district, y = rhcc6, fill = district),
            position = "dodge") +
-  scale_fill_manual(values = cols) +
+  scale_fill_manual(values = cols2) +
   theme_minimal() +
   labs(x = "District", y = "# supervisors trained", fill = "District"))
 ```
