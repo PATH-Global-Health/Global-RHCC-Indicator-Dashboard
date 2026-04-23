@@ -54,8 +54,8 @@ bar_time_plot = function(dat, kpi, ylab){
   ggplot(data = dat %>%
            filter(!is.na({{kpi}})) %>%
            group_by(adm0, date = quarter(date, type = "date_first")) %>%
-           mutate(kpi = mean({{kpi}}, na.rm = T)), 
-       aes(x = date, y = {{kpi}}, fill = adm0)) +
+           mutate(kpi = mean({{kpi}}, na.rm = T) %>% round()), 
+       aes(x = date, y = kpi, fill = adm0)) +
     geom_bar(position = position_dodge(preserve = "single"), stat = "identity") +
     scale_fill_manual(values = c(palette)) +
     labs(x ="Date", y = ylab, fill = "Country") +
@@ -337,12 +337,7 @@ ggplotly(bar_time_plot(dat, rhcc14, "% accurate"))
 ### **RHCC15** - % of Complete Reports Submitted
 
 ```{r}
-#ggplotly(bar_time_plot(dat, rhcc15, "% complete"))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(bar_time_plot(dat, rhcc15, "% complete"))
 ```
 
 ## Row {data-height="60"}
@@ -1854,29 +1849,22 @@ ggplotly(line_plot(rhcc12_d, "% of CHWs with no stock-outs") +
 ### **RHCC13** - % of Reports Submitted on Time
 
 ```{r}
-ggplotly(line_plot(rhcc13, "% on time"))
+ggplotly(line_plot(rhcc13, "% on time") +
+           scale_y_continuous(lim = c(0,100)))
 ```
 
 ### **RHCC14** - % of Accurate Reports Submitted
 
 ```{r}
-#line_plot(rhcc14, "% on time")
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(line_plot(rhcc14, "% accurate") +
+           scale_y_continuous(lim = c(0,100)))
 ```
 
 ### **RHCC15** - % of Complete Reports Submitted
 
 ```{r}
-#line_plot(rhcc15, "% on time")
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(line_plot(rhcc15, "% complete") +
+           scale_y_continuous(lim = c(0,100)))
 ```
 
 ## Row {data-height="60"}
@@ -2635,7 +2623,7 @@ ggplotly(dist_combined_rep_calc %>%
            theme(strip.text = element_text(size = 10),
                  axis.text.x = element_text(size = 6),
                  plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm")) +
-           labs(x = "Date", y = "% of reports submitted on time", color = "District") +
+           labs(x = "Date", y = "% on time", color = "District") +
            ylim(0, 100))
 ```
 
@@ -2656,7 +2644,7 @@ ggplotly(dist_combined_rep_calc %>%
   theme(strip.text = element_text(size = 10),
         axis.text.x = element_text(size = 6),
         plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm")) +
-  labs(x = "Date", y = "% of accurate reports submitted", color = "District") +
+  labs(x = "Date", y = "% accurate", color = "District") +
   ylim(0, 100))
 
 ```

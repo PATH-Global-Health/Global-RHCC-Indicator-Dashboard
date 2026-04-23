@@ -1,9 +1,4 @@
-# RStudio
-.Rproj.user/
+.Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-
-# OS junk
-.DS_Store
-Thumbs.db
