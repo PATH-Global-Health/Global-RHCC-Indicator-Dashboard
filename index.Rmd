@@ -434,11 +434,8 @@ ggplotly(bar_plot(dat, rhcc26, "# of Rotary members trained on use\nof a Communi
 ### **RHCC27** - \# of RHCC Districts Reporting on a Community Scorecard
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(bar_plot(dat, rhcc27, "# of districts reporting on a community scorecard") +
+           scale_y_continuous(lim = c(0,10), expand = c(0,0)))
 ```
 
 # DRC
