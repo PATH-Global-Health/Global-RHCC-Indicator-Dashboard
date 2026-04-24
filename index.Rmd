@@ -2602,7 +2602,7 @@ ggplotly(dist_combined_rep_calc %>%
            ggplot() +
            geom_line(aes(x = period, y = `RHCC - Reporting rate`, color = district),
                      lwd = 0.9) +
-           scale_color_manual(values = cols2) +
+           scale_color_manual(values = cols) +
            theme_light() + 
            scale_x_date(date_breaks = "1 month", date_labels = "%b") +
            labs(x = "Month", y = "RHCC - Reporting Rates, 2025-2026") +
@@ -2671,7 +2671,7 @@ ggplotly(survey_dist %>%
     geom_point(aes(y = district, x = rhcc16_prop*100, color = district), size = 4) +
     geom_line(aes(y = district, x = rhcc16_prop*100, group = district)) +
     #scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
-    scale_color_manual(values = cols2) +
+    scale_color_manual(values = cols) +
     labs(color = "District", x ="% of Caregivers", y = "District") +
     theme_light() +
     xlim(c(0,100)))
@@ -2686,7 +2686,7 @@ ggplotly(survey_dist %>%
     geom_point(aes(y = district, x = rhcc17_prop*100, color = district), size = 4) +
     geom_line(aes(y = district, x = rhcc17_prop*100, group = district)) +
     #scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
-    scale_color_manual(values = cols2) +
+    scale_color_manual(values = cols) +
     labs(color = "District", x ="% of Caregivers", y = "District") +
     theme_light() +
     xlim(c(0,100)))
@@ -2701,7 +2701,7 @@ ggplotly(survey_dist %>%
     geom_point(aes(y = district, x = rhcc18_prop*100, color = district), size = 4) +
     geom_line(aes(y = district, x = rhcc18_prop*100, group = district)) +
     #scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
-    scale_color_manual(values = cols2) +
+    scale_color_manual(values = cols) +
     labs(color = "District", x ="% of Caregivers", y = "District") +
     theme_light() +
     xlim(c(0,100)))
@@ -2712,7 +2712,7 @@ ggplotly(survey_dist %>%
 ### **RHCC19** - \# of Rotary Volunteers Engaged
 
 ```{r}
-rotary_kpi_cum <- read_xlsx(path = "data/Copy of Rotary KPIs_March 2026 and YTD.xlsx",
+rotary_kpi_cum <- read_xlsx(path = "Copy of Rotary KPIs_March 2026 and YTD.xlsx",
                         sheet = "ytd26") %>%
   janitor::clean_names()
 
