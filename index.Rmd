@@ -27,6 +27,12 @@ dat = read_rds("MNTD/Projects/RHCC (Rotary)/Dashboard/data/clean/dat.rds")
 
 palette = c("DRC" = "#FF0000", "MOZ" = "#00A08A", "NGA" = "#F2AD00", "ZAM" = "#5BBCD6")
 
+pathcolors = list("DkRed"="#a8001e", "Red"="#f65050", "PtlRed"="#fbb9b9",
+                   "DkPurple"="#37379b", "Purple"="#5050cd", "PtlYellow"="#ffe178", 
+                   "DkTeal"="#005a87", "Teal"="#008c9b", "PtlTeal"="#99d1d7", 
+                   "DkGreen"="#056e23", "Green"="#1eaf5f", "PtlGreen"="#a5dfbf", 
+                   "Black"="#000000", "Gray"="#464f60", "LtGray"="#e8eaeb", "Biege"="#f4ede7")
+
 line_plot = function(dat, date, kpi, ylab){
   ggplot(dat %>% filter(!is.na({{kpi}}))) + 
     geom_line(aes(x = date, y = {{kpi}}, color = adm0), size = 1.2) +
@@ -411,7 +417,7 @@ ggplotly(bar_plot(dat, rhcc23, "# of advocacy activities") +
 ### **RHCC24** - \# of Rotary Members Positioned in Local Decision Making Groups or Advisory Bodies
 
 ```{r}
-ggplotly(bar_plot(dat, rhcc24, "# of Rotary members positioned in local\ndecision-making groups or advisory bodies") +
+ggplotly(bar_plot(dat, rhcc24, "# of Rotary members in local decision-making groups") +
            scale_y_continuous(lim = c(0,10), expand = c(0,0)))
 ```
 
@@ -1066,14 +1072,6 @@ district_cases_dat <- read_csv("data/district_aps_total_cases.csv") %>%
   rename(district = row_labels) %>%
   mutate(period = parse_date_time(month, orders = "y-b", quiet = TRUE))
 
-#palette = wes_palette("Darjeeling1")[c(1:3,5)]
-#Plotting functions
-pathcolors <- list("DkRed"="#a8001e", "Red"="#f65050", "PtlRed"="#fbb9b9",
-                   "DkPurple"="#37379b", "Purple"="#5050cd", "PtlYellow"="#ffe178", 
-                   "DkTeal"="#005a87", "Teal"="#008c9b", "PtlTeal"="#99d1d7", 
-                   "DkGreen"="#056e23", "Green"="#1eaf5f", "PtlGreen"="#a5dfbf", 
-                   "Black"="#000000", "Gray"="#464f60", "LtGray"="#e8eaeb", "Biege"="#f4ede7")
-
 palette = pathcolors[c(1,2,5,6,8)]
 
 cols = c("Chifunde" = "#004B49", "Dôa" = "#00827F", "Manica" = "#48D1CC",
@@ -1552,7 +1550,7 @@ rhcc26_plot <- rhcc26 %>%
   #filter(period <= "2025-12-01") %>%
   ggplot() +
   geom_col(aes(x = period, y = value, fill = district), lwd = 0.8) +
-  labs(x = "Date", y = "# of volunteers  trained on community scorecards", fill = "District") +
+  labs(x = "Date", y = "# of volunteers trained on community scorecards", fill = "District") +
   scale_fill_manual(values = cols) +
   #ylim(0, 1) +
   theme_minimal()
@@ -1997,7 +1995,7 @@ ggplotly(
 ### **RHCC24** - \# of Rotary Members Positioned in Local Decision Making Groups or Advisory Bodies
 
 ```{r}
-ggplotly(bar_plot(dat, rhcc24, "# of Rotary members positioned in local\ndecision-making groups or advisory bodies"))
+ggplotly(bar_plot(dat, rhcc24, "# of Rotary members in local decision-making groups"))
 ```
 
 ### **RHCC25** - \# of Advocacy Activities Covered by Media
@@ -2050,7 +2048,7 @@ ggplotly(
     geom_bar(aes(y = rhcc26, x = Type, alpha = Gender),
              position = "stack", stat = "identity", fill = "#F2AD00") +
     scale_alpha_manual(values = c("Female" = 1, "Male" = 0.7)) +
-    labs(fill = "", x ="", y = "# of Rotary members trained on use of a Community Scorecard", alpha = "Gender") +
+    labs(fill = "", x ="", y = "# of volunteers trained on community scorecard", alpha = "Gender") +
     ggforce::facet_wrap_paginate(~year) +
     theme_minimal() +
     theme(axis.text.x = element_text(size = 8),
@@ -2095,6 +2093,9 @@ commodity_dat <- read_csv("rhcc11.csv") %>%
 
 #RHCC 13 dataset
 combined_rep <- read_csv("rhcc13.csv")
+
+#RHCC 16-18
+survey_dat <- read_csv("facility_samples_rhcc16_18.csv")
 
 #palette = wes_palette("Darjeeling1")[c(1:3,5)]
 cols = c("Chilubi" = pathcolors$DkTeal, "Chisamba" = pathcolors$Purple, "Kasama" = pathcolors$PtlTeal,
@@ -2151,6 +2152,8 @@ ggplotly(rhcc1_mort_plot)
 #   facet_wrap(vars(district), nrow = 1)
 
 rhcc1_hosp_plot_monthly = rhcc1_hosp_monthly %>%
+    #Kasama outlier in march 2026
+    filter(u5_hosp_u5_pop <= 10) %>%
   ggplot() +
   geom_line(aes(x = period, y = u5_hosp_u5_pop, color = district), lwd = 0.8) +
   labs(x = "Date", y = "Under-5 hospitalizations per 1,000 children under 5", color = "Disease") +
@@ -2498,7 +2501,45 @@ ggplot() +
 
 ## Row
 
-### **RHCC11** - % of Health Facilities with No Stock-outs of Key Medicines and Diagnostics in the Past Month
+### **RHCC11** - % of Facilities That Had No Stock-outs of *Malaria* Commodities During the Reporting Period
+
+```{r}
+# ggplotly(line_plot(dat, date, rhcc12_m, "% of CHWs with no stock-outs") +
+#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
+ggplot() +
+  annotate("label", x = 1, y = 1, 
+           label = "Data Collection/Processing Underway",
+           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
+  theme_void()
+```
+
+### **RHCC11** - % of Facilities That Had No Stock-outs of *Pneumonia* Commodities During the Reporting Period
+
+```{r}
+# ggplotly(line_plot(dat, date, rhcc12_p, "% of CHWs with no stock-outs") +
+#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
+ggplot() +
+  annotate("label", x = 1, y = 1, 
+           label = "Data Collection/Processing Underway",
+           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
+  theme_void()
+```
+
+### **RHCC11** - % of Facilities That Had No Stock-outs of *Diarrhoea* Commodities During the Reporting Period
+
+```{r}
+# ggplotly(line_plot(dat, date, rhcc12_d, "% of CHWs with no stock-outs") +
+#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
+ggplot() +
+  annotate("label", x = 1, y = 1, 
+           label = "Data Collection/Processing Underway",
+           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
+  theme_void()
+```
+
+## Row
+
+### **RHCC12** - % of CHWs with No Stock-outs of Key Medicines and Diagnostics in the Past Month
 
 ```{r}
 ggplotly(commodity_dat %>%
@@ -2546,82 +2587,25 @@ ggplotly(commodity_dat %>%
 
 ## Row
 
-### **RHCC12** - % of CHWs Who Had No Stock-outs of *Malaria* Commodities During the Reporting Period
-
-```{r}
-# ggplotly(line_plot(dat, date, rhcc12_m, "% of CHWs with no stock-outs") +
-#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC12** - % of CHWs Who Had No Stock-outs of *Pneumonia* Commodities During the Reporting Period
-
-```{r}
-# ggplotly(line_plot(dat, date, rhcc12_p, "% of CHWs with no stock-outs") +
-#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC12** - % of CHWs Who Had No Stock-outs of *Diarrhoea* Commodities During the Reporting Period
-
-```{r}
-# ggplotly(line_plot(dat, date, rhcc12_d, "% of CHWs with no stock-outs") +
-#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
 ### **RHCC13** - % of Reports Submitted on Time
 
 ```{r, message=FALSE, warning=FALSE}
 
-dist_combined_rep_calc <- combined_rep %>%
-  filter(grepl("district", facility) == FALSE) %>%
-  group_by(period, district) %>%
-  summarise(`RHCC - Actual reports` = sum(`RHCC - Actual reports`, na.rm = TRUE),
-            `RHCC - Actual reports on time` = sum(`RHCC - Actual reports on time`, na.rm = TRUE),
-            `RHCC - Expected reports` = sum(`RHCC - Expected reports`, na.rm = TRUE)) %>%
-  ungroup() %>%
-  mutate(`RHCC - Reporting rate` = round((`RHCC - Actual reports`/ `RHCC - Expected reports`) * 100, 2),
-         `RHCC - Reporting rate on time` = round((`RHCC - Actual reports on time`/ `RHCC - Expected reports`) * 100, 2))
-
-
-#plotting reporting rate on time
-# ggplotly(dist_combined_rep_calc %>%
-#   ggplot() +
-#   geom_col(aes(x = period, y = `RHCC - Reporting rate on time`), fill = pathcolors$Green, alpha = 0.6) +
-#   facet_wrap(vars(district), nrow = 1) +
-#   theme_minimal() + 
-#   scale_x_date(date_breaks = "1 month", date_labels = "%b") +
-#   labs(x = "Date", y = "RHCC - Reporting Rates On Time, 2025") + 
-#   ylim(0, 100))
+dist_combined_rep_calc <- combined_rep
 
 ggplotly(dist_combined_rep_calc %>%
+           rename(rhcc13 = `RHCC - Reporting rate`) %>%
+           group_by(period, "District" = district) %>%
+           reframe(rhcc13 = mean(rhcc13, na.rm = T)) %>%
            ggplot() +
-           geom_line(aes(x = period, y = `RHCC - Reporting rate`, color = district),
+           geom_line(aes(x = period, y = rhcc13, color = District),
                      lwd = 0.9) +
            scale_color_manual(values = cols) +
            theme_minimal() + 
-           scale_x_date(date_breaks = "1 month", limits = c(as.Date("2025-06-01"),as.Date("2026-01-01")), date_labels =  "%m/%Y") +
-           theme_minimal() +
-           theme(strip.text = element_text(size = 10),
-                 axis.text.x = element_text(size = 6),
-                 plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm")) +
-           labs(x = "Date", y = "% on time", color = "District") +
+           scale_x_date(date_breaks = "1 month", date_labels =  "%m/%Y") +
+           labs(x = "Month", y = "% of time") +
            ylim(0, 100))
+
 ```
 
 ## Row
@@ -2631,18 +2615,12 @@ ggplotly(dist_combined_rep_calc %>%
 ```{r}
 
 #plotting reporting rate
-ggplotly(dist_combined_rep_calc %>%
-  ggplot() +
-  geom_line(aes(x = period, y = `RHCC - Reporting rate`, color = district),
-            lwd = 0.9) +
-  scale_color_manual(values = cols) +
-  scale_x_date(date_breaks = "1 month", limits = c(as.Date("2025-06-01"),as.Date("2026-01-01")), date_labels =  "%m/%Y") +
-  theme_minimal() +
-  theme(strip.text = element_text(size = 10),
-        axis.text.x = element_text(size = 6),
-        plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm")) +
-  labs(x = "Date", y = "% accurate", color = "District") +
-  ylim(0, 100))
+ggplot() +
+  annotate("label", x = 1, y = 1, 
+           label = "Data Collection in Process",
+           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
+  theme_void() +
+  labs(title = "Data Not yet Available")
 
 ```
 
@@ -2662,6 +2640,7 @@ ggplot() +
 ## Row {data-height="50"}
 
 For the following indicators, caregivers will be surveyed during upcoming health facility visits.
+Not all facilities have collected the requisite number of survey responses to meet their calculated sample sizes. Raw district-level proportions are not yet fully representative of district-wide reality per the project's sampling plan. Baseline data are currently shown as single points. Future iterations will compare these data with an endline survey to demonstrate progress.
 
 ## Row
 
@@ -2669,33 +2648,59 @@ For the following indicators, caregivers will be surveyed during upcoming health
 
 ```{r}
 # ggplotly(dumbbell_plot(dat, rhcc16, "% of caregivers aware of iCCM services"))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+survey_dist <- survey_dat %>%
+  group_by(district) %>%
+  summarise(n_responses = sum(n_responses, na.rm = TRUE),
+            rhcc16_yes = sum(rhcc16_yes, na.rm = TRUE),
+            rhcc17_yes = sum(rhcc17_yes, na.rm = TRUE),
+            rhcc18_yes = sum(rhcc18_yes, na.rm = TRUE),
+            rhcc16_all = sum(rhcc16_all, na.rm = TRUE),
+            rhcc17_all = sum(rhcc17_all, na.rm = TRUE),
+            rhcc18_all = sum(rhcc18_all, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(rhcc16_prop = round(rhcc16_yes/rhcc16_all, 2),
+         rhcc17_prop = round(rhcc17_yes/rhcc17_all, 2),
+         rhcc18_prop = round(rhcc18_yes/rhcc18_all, 2))
+
+ggplotly(survey_dist %>%
+  ggplot() + 
+    geom_point(aes(y = district, x = rhcc16_prop*100, color = district), size = 4) +
+    geom_line(aes(y = district, x = rhcc16_prop*100, group = district)) +
+    #scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
+    scale_color_manual(values = cols) +
+    labs(color = "District", x ="% of Caregivers", y = "District") +
+    theme_minimal() +
+    xlim(c(0,100)))
 ```
 
 ### **RHCC17** - % of Caregivers Who Know the Location of Their CHW
 
 ```{r}
 # ggplotly(dumbbell_plot(dat, rhcc17, "% of caregivers who know CCM location"))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(survey_dist %>%
+  ggplot() + 
+    geom_point(aes(y = district, x = rhcc17_prop*100, color = district), size = 4) +
+    geom_line(aes(y = district, x = rhcc17_prop*100, group = district)) +
+    #scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
+    scale_color_manual(values = cols) +
+    labs(color = "District", x ="% of Caregivers", y = "District") +
+    theme_minimal() +
+    xlim(c(0,100)))
 ```
 
 ### **RHCC18** - % of Caregivers Who Know Two or More Signs of Childhood Illness That Require Immediate Assessment and, if Appropriate, Treatment
 
 ```{r}
 # ggplotly(dumbbell_plot(dat, rhcc18, "% of caregivers who know warning signs"))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(survey_dist %>%
+  ggplot() + 
+    geom_point(aes(y = district, x = rhcc18_prop*100, color = district), size = 4) +
+    geom_line(aes(y = district, x = rhcc18_prop*100, group = district)) +
+    #scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
+    scale_color_manual(values = cols) +
+    labs(color = "District", x ="% of Caregivers", y = "District") +
+    theme_minimal() +
+    xlim(c(0,100)))
 ```
 
 ## Row
@@ -2703,21 +2708,44 @@ ggplot() +
 ### **RHCC19** - \# of Rotary Volunteers Engaged
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+rotary_kpi_cum <- read_excel("~/Library/CloudStorage/Box-Box/MNTD/Projects/RHCC (Rotary)/Dashboard/data/clean/zambia/Copy of Rotary KPIs_March 2026 and YTD.xlsx", sheet = "ytd26") %>%
+  janitor::clean_names()
+
+ggplotly(rotary_kpi_cum %>%
+  dplyr::select(rhcc_kpi, description_number_of, cumul_ytd,
+                Rotarian = rotarian, `Non-Rotarian` = rotaractor) %>%
+  pivot_longer(cols = c("Rotarian", "Non-Rotarian"), names_to = "Type",
+               values_to = "Count") %>%
+  filter(rhcc_kpi == 19) %>%
+  mutate(stat = "Cumulative YTD") %>%
+  ggplot() +
+    geom_col(aes(x = stat, y = Count, alpha = Type),
+             fill = "#5BBCD6") +
+    scale_alpha_manual(values = c(0.9, 0.5),
+                       breaks = c("Rotarian", "Non-Rotarian")) +
+  labs(x = "", y = "# of volunteers engaged", alpha = "Volunteer type") +
+    scale_x_discrete(expand = c(0.5,0.5)) +
+    theme_minimal())
 ```
 
 ### **RHCC20** - \# of Rotary Volunteer Hours Invested in Services, Activities, and Service Projects
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(rotary_kpi_cum %>%
+  dplyr::select(rhcc_kpi, description_number_of, cumul_ytd,
+                Rotarian = rotarian, `Non-Rotarian` = rotaractor) %>%
+  pivot_longer(cols = c("Rotarian", "Non-Rotarian"), names_to = "Type",
+               values_to = "Count") %>%
+  filter(rhcc_kpi == 20) %>%
+    mutate(stat = "Cumulative YTD") %>%
+  ggplot() +
+    geom_col(aes(x = stat, y = Count, alpha = Type),
+             fill = "#5BBCD6") +
+    scale_alpha_manual(values = c(0.9, 0.5),
+                       breaks = c("Rotarian", "Non-Rotarian")) +
+  labs(x = "", y = "# of volunteer hours", alpha = "Volunteer type") +
+    scale_x_discrete(expand = c(0.5,0.5)) +
+    theme_minimal())
 ```
 
 ## Row
@@ -2725,31 +2753,49 @@ ggplot() +
 ### **RHCC21** - \# of Rotary Entities Involved in the Country Program
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(rotary_kpi_cum %>%
+  dplyr::select(rhcc_kpi, description_number_of, cumul_ytd) %>%
+  filter(rhcc_kpi == 21) %>%
+  mutate(stat = "Cumulative YTD") %>%
+  ggplot() +
+    geom_col(aes(x = stat, y = cumul_ytd),
+             fill = "#5BBCD6") +
+  labs(x = "", y = "# of Rotary entities involved in the country program") +
+  ylim(0, 50) +
+    scale_x_discrete(expand = c(0.5,0.5)) +
+    theme_minimal())
 ```
 
 ### **RHCC22** - \# of Formal Partnerships Established
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(rotary_kpi_cum %>%
+  dplyr::select(rhcc_kpi, description_number_of, cumul_ytd) %>%
+  filter(rhcc_kpi == 22) %>%
+  mutate(stat = "Cumulative YTD") %>%
+  ggplot() +
+    geom_col(aes(x = stat, y = cumul_ytd),
+             fill = "#5BBCD6") +
+  labs(x = "", y = "# of formal partnerships established") +
+  ylim(0, 5) +
+    scale_x_discrete(expand = c(0.5,0.5)) +
+    theme_minimal())
 ```
 
 ### **RHCC23** - \# of Advocacy Activities
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(rotary_kpi_cum %>%
+  dplyr::select(rhcc_kpi, description_number_of, cumul_ytd) %>%
+  filter(rhcc_kpi == 23) %>%
+  mutate(stat = "Cumulative YTD") %>%
+  ggplot() +
+  geom_col(aes(x = stat, y = cumul_ytd),
+           fill = "#5BBCD6") +
+  labs(x = "", y = "# of advocacy activities") +
+  ylim(0, 10) +
+  scale_x_discrete(expand = c(0.5,0.5)) +
+  theme_minimal())
 ```
 
 ## Row
@@ -2757,21 +2803,33 @@ ggplot() +
 ### **RHCC24** - \# of Rotary Members Positioned in Local Decision Making Groups or Advisory Bodies
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(rotary_kpi_cum %>%
+  dplyr::select(rhcc_kpi, description_number_of, cumul_ytd) %>%
+  filter(rhcc_kpi == 24) %>%
+  mutate(stat = "Cumulative YTD") %>%
+  ggplot() +
+  geom_col(aes(x = stat, y = cumul_ytd),
+           fill = "#5BBCD6") +
+  labs(x = "", y = "# of Rotary members in local decision-making groups") +
+  ylim(0, 10) +
+  scale_x_discrete(expand = c(0.5,0.5)) +
+  theme_minimal())
 ```
 
 ### **RHCC25** - \# of Advocacy Activities Covered by Media
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(rotary_kpi_cum %>%
+  dplyr::select(rhcc_kpi, description_number_of, cumul_ytd) %>%
+  filter(rhcc_kpi == 25) %>%
+  mutate(stat = "Cumulative YTD") %>%
+  ggplot() +
+  geom_col(aes(x = stat, y = cumul_ytd),
+           fill = "#5BBCD6") +
+  labs(x = "", y = "# of advocacy activities covered by media") +
+  ylim(0, 10) +
+  scale_x_discrete(expand = c(0.5,0.5)) +
+  theme_minimal())
 ```
 
 ## Row
@@ -2779,21 +2837,33 @@ ggplot() +
 ### **RHCC26** - \# of Rotary Members Trained on Use of a Community Scorecard
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(rotary_kpi_cum %>%
+  dplyr::select(rhcc_kpi, description_number_of, cumul_ytd) %>%
+  filter(rhcc_kpi == 26) %>%
+  mutate(stat = "Cumulative YTD") %>%
+  ggplot() +
+  geom_col(aes(x = stat, y = cumul_ytd),
+           fill = "#5BBCD6") +
+  labs(x = "", y = "# of members trained on community scorecard") +
+  ylim(0, 50) +
+  scale_x_discrete(expand = c(0.5,0.5)) +
+  theme_minimal())
 ```
 
 ### **RHCC27** - \# of RHCC Districts Reporting on a Community Scorecard
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(rotary_kpi_cum %>%
+  dplyr::select(rhcc_kpi, description_number_of, cumul_ytd) %>%
+  filter(rhcc_kpi == 27) %>%
+  mutate(stat = "Cumulative YTD") %>%
+  ggplot() +
+  geom_col(aes(x = stat, y = cumul_ytd),
+           fill = "#5BBCD6") +
+  labs(x = "", y = "# of districts reporting on a community scorecard") +
+  ylim(0, 6) +
+  scale_x_discrete(expand = c(0.5,0.5)) +
+  theme_minimal())
 ```
 
 # KPI definitions
