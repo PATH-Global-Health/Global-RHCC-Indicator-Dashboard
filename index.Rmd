@@ -2100,7 +2100,7 @@ commodity_dat <- read_csv("rhcc11.csv") %>%
 combined_rep <- read_csv("rhcc13.csv")
 
 #RHCC 16-18
-survey_dat <- read_csv("data/clean/facility_samples_rhcc16_18.csv")
+survey_dat <- read_csv("facility_samples_rhcc16_18.csv")
 
 #palette = wes_palette("Darjeeling1")[c(1:3,5)]
 cols = c("Chilubi" = pathcolors$DkTeal, "Chisamba" = pathcolors$Purple, "Kasama" = pathcolors$PtlTeal,
