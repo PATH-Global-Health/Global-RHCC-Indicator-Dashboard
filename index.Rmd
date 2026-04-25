@@ -304,21 +304,21 @@ ggplotly(line_plot(dat, date, rhcc11_d, "% of health facilities with no stock-ou
 
 ```{r}
 ggplotly(line_plot(dat, date, rhcc12_m, "% of CHWs with no stock-outs") +
-           scale_y_continuous(lim = c(0,100), expand = c(0,0)))
+           scale_y_continuous(lim = c(0,102), expand = c(0,0)))
 ```
 
 ### **RHCC12** - % of CHWs with No Stock-outs of Key *Pneumonia* Medicines and Diagnostics in the Past Month
 
 ```{r}
 ggplotly(line_plot(dat, date, rhcc12_p, "% of CHWs with no stock-outs") +
-           scale_y_continuous(lim = c(0,100), expand = c(0,0)))
+           scale_y_continuous(lim = c(-2,102), expand = c(0,0)))
 ```
 
 ### **RHCC12** - % of CHWs with No Stock-outs of Key *Diarrhoea* Medicines and Diagnostics in the Past Month
 
 ```{r}
 ggplotly(line_plot(dat, date, rhcc12_d, "% of CHWs with no stock-outs") +
-           scale_y_continuous(lim = c(0,100), expand = c(0,0)) +
+           scale_y_continuous(lim = c(0,102), expand = c(0,0)) +
            scale_x_date(date_breaks = "3 months", limits = c(as.Date("2025-10-01"),as.Date("2026-03-01")), date_labels =  "%m/%Y"))
 ```
 
@@ -453,7 +453,7 @@ setwd("~/Library/CloudStorage/Box-Box/") #UPDATE HERE AND FIRST CHUNK FOR EACH C
 hz = read_rds("MNTD/Projects/RHCC (Rotary)/Dashboard/data/clean/DRC/hz.rds")
 drc = read_rds("MNTD/Projects/RHCC (Rotary)/Dashboard/data/clean/DRC/drc.rds")
 
-palette = c("salmon2","red3","salmon4","darksalmon","red2", "pink2","brown1","red4", "orangered", "orangered3","pink3", "brown2","pink4","brown3","salmon3","salmon1","brown4","pink1")
+palette = c("salmon2","red3","salmon4","darksalmon","red2", "pink2","brown1","red4", "orangered", "orangered3","brown2","pink1","brown3","salmon3","salmon1","brown4")
 
 line_plot = function(kpi, ylab){
   ggplot(data = hz) + 
@@ -818,13 +818,8 @@ ggplot() +
 ### **RHCC12** - % of CHWs with No Stock-outs of Key *Malaria* Medicines and Diagnostics in the Past Month
 
 ```{r}
-#ggplotly(line_plot(rhcc12_m, "% of CHWs with no stock-outs") +
-#            scale_y_continuous(lim = c(0,100)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(line_plot(rhcc12_m, "% of CHWs with no stock-outs") +
+            scale_y_continuous(lim = c(0,100)))
 ```
 
 ### **RHCC12** - % of CHWs with No Stock-outs of Key *Pneumonia* Medicines and Diagnostics in the Past Month
@@ -846,22 +841,16 @@ ggplotly(line_plot(rhcc12_d, "% of CHWs with no stock-outs") +
 ### **RHCC12.9** - # of expected reports
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(line_plot(rhcc12.9, "# expected") + 
+           scale_x_date(date_breaks = "1 month", limits = c(as.Date("2026-03-01"),as.Date("2026-05-01")), date_labels =  "%m/%Y"))
 ```
 
 ### **RHCC13** - % of Reports Submitted on Time
 
 ```{r}
-#line_plot(rhcc13, "% on time")
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(line_plot(rhcc13, "% on time") + 
+           scale_x_date(date_breaks = "1 month", limits = c(as.Date("2026-03-01"),as.Date("2026-05-01")), date_labels =  "%m/%Y") +
+           scale_y_continuous(lim = c(0,100)))
 ```
 
 ### **RHCC14** - % of Accurate Reports Submitted
@@ -878,12 +867,9 @@ ggplot() +
 ### **RHCC15** - % of Complete Reports Submitted
 
 ```{r}
-#line_plot(rhcc15, "% on time")
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(line_plot(rhcc15, "% on time") +
+           scale_x_date(date_breaks = "1 month", limits = c(as.Date("2026-03-01"),as.Date("2026-05-01")), date_labels =  "%m/%Y") +
+          scale_y_continuous(lim = c(0,100)))
 ```
 
 ## Row {data-height="60"}
@@ -901,12 +887,7 @@ ggplotly(dumbbell_plot(hz, rhcc16, "% of caregivers aware of iCCM services"))
 ### **RHCC17** - % of Caregivers Who Know the Location of Their CHW
 
 ```{r}
-#ggplotly(dumbbell_plot(dat_state, rhcc17, "% of caregivers who know CCM location"))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(dumbbell_plot(hz, rhcc17, "% of caregivers who know CCM location"))
 ```
 
 ### **RHCC18** - % of Caregivers Who Know Two or More Signs of Childhood Illness That Require Immediate Assessment and, if Appropriate, Treatment
@@ -951,11 +932,7 @@ ggplotly(bar_plot(drc, rhcc20, "# of Rotary volunteer hours invested") + ylim(c(
 ### **RHCC21** - \# of Rotary Entities Involved in the Country Program
 
 ```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(bar_plot(drc, rhcc21, "# of Rotary entities involved in the country program") + ylim(c(0,15)))
 ```
 
 ### **RHCC22** - \# of Formal Partnerships Established
@@ -984,28 +961,15 @@ ggplotly(bar_plot(drc, rhcc24, "# of formal partnerships established") + ylim(c(
 ggplotly(bar_plot(drc, rhcc25, "# of advocacy activities covered by media") + ylim(c(0,5)))
 ```
 
-## Row
-
 ### **RHCC26** - \# of Rotary Members Trained on Use of a Community Scorecard
 
 ```{r}
 ggplotly(bar_plot(drc, rhcc26, "# of Rotary members trained on use of a community scorecard") + ylim(c(0,15)) + theme(axis.title = element_text(size = 9)))
 ```
 
-### **RHCC27** - \# of RHCC Districts Reporting on a Community Scorecard
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-
 ## Row
 
-### **RHCC28** - # of Advocacy Sessions Carried Out Nationally to Promote RHCC Sustainability
+### **RHCC28** - # of Quarterly Monitoring Meetings with Implementing Partners and the Ministry Conducted at National Level
 
 ```{r}
 ggplot() +
@@ -1015,17 +979,7 @@ ggplot() +
   theme_void()
 ```
 
-### **RHCC29** - # of Quarterly Monitoring Meetings with Implementing Partners and the Ministry Conducted at National Level
-
-```{r}
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC30** - # of Quarterly Monitoring Missions Conducted at Provincial Level
+### **RHCC29** - # of Quarterly Monitoring Missions Conducted at Provincial Level
 
 ```{r}
 ggplot() +
@@ -1583,7 +1537,7 @@ palette = c("orange1", "brown1")
 
 line_plot = function(kpi, ylab){
   ggplot() + 
-    geom_line(data = dat_state %>% filter(date>"2025-09-01"), 
+    geom_line(data = dat_state %>% filter(date>"2025-09-01",!is.na({{kpi}})), 
               aes(x = date, y = {{kpi}}, color = State), size = 1.5) +
     geom_point(data = dat_state  %>% filter(date>"2025-09-01"), 
                aes(x = date, y = {{kpi}}, color = State), size = 1.5) +
@@ -1703,7 +1657,7 @@ ggplotly(line_plot(rhcc2.4, "% of diarrhoea cases treated in community") +
 
 ```{r}
 ggplotly(line_plot(rhcc2.5, "% of pneumonia cases treated in community") +
-           scale_y_continuous(lim = c(-2,140)))
+           scale_y_continuous(lim = c(-2,180)))
 ```
 
 ## Row {data-height="60"}
@@ -1769,7 +1723,7 @@ ggplotly(
 
 ```{r}
 ggplotly(line_plot(rhcc7, "% of CHWs with supervisory contact during prior month")+
-           scale_y_continuous(lim = c(0,100), expand = c(0,0)))
+           scale_y_continuous(lim = c(-2,102), expand = c(0,0)))
 ```
 
 ### **RHCC8** - % of CHWs Who Correctly Count Respiratory Rate to Diagnose ARI
@@ -1807,13 +1761,8 @@ ggplot() +
 ### **RHCC11** - % of Health Facilities with No Stock-outs of Key *Malaria* Medicines and Diagnostics in the Past Month
 
 ```{r}
-#ggplotly(line_plot(rhcc11_m, "% of health facilities with no stock-outs") +
- #          scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
+ggplotly(line_plot(rhcc11_m, "% of health facilities with no stock-outs") +
+           scale_y_continuous(lim = c(0,100), expand = c(0,0)))
 ```
 
 ## Row
@@ -1852,7 +1801,7 @@ ggplotly(line_plot(rhcc13, "% on time") +
 
 ```{r}
 ggplotly(line_plot(rhcc14, "% accurate") +
-           scale_y_continuous(lim = c(0,100)))
+    scale_y_continuous(lim = c(0,100)))
 ```
 
 ### **RHCC15** - % of Complete Reports Submitted
@@ -1995,7 +1944,14 @@ ggplotly(
 ### **RHCC24** - \# of Rotary Members Positioned in Local Decision Making Groups or Advisory Bodies
 
 ```{r}
-ggplotly(bar_plot(dat, rhcc24, "# of Rotary members in local decision-making groups"))
+ggplotly(ggplot(dat_adm0 %>%
+                  filter(!is.na(rhcc24)) %>%
+                  filter(row_number()==n())) + 
+      geom_col(aes(y = rhcc24, x = year), fill = "#F2AD00", width = 1) +
+      labs(x ="Year", y = "# of Rotary members in local decision-making groups") +
+      scale_y_continuous(expand = c(0,0)) +
+      scale_x_continuous(breaks = c(1,2)) +
+      theme_minimal())
 ```
 
 ### **RHCC25** - \# of Advocacy Activities Covered by Media
@@ -2871,7 +2827,7 @@ ggplotly(rotary_kpi_cum %>%
 Definitions for each KPI, along with thematic area, the numerator and denominator used to calculate the KPI, and the level of disaggregation, are shown below. For KPIs that are specific to a subset of countries, the relevant countries are noted.
 
 ```{r}
-data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC2.4","RHCC2.5","RHCC2.6","RHCC3","RHCC3.1","RHCC4","RHCC5","RHCC6","RHCC7","RHCC8","RHCC9","RHCC9.1","RHCC10","RHCC11","RHCC12","RHCC12.9","RHCC13","RHCC14","RHCC15","RHCC16","RHCC17","RHCC18","RHCC18.1","RHCC19","RHCC20","RHCC21","RHCC22","RHCC23","RHCC24","RHCC25","RHCC26","RHCC27","RHCC28","RHCC29","RHCC30"), 
+data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC2.4","RHCC2.5","RHCC2.6","RHCC3","RHCC3.1","RHCC4","RHCC5","RHCC6","RHCC7","RHCC8","RHCC9","RHCC9.1","RHCC10","RHCC11","RHCC12","RHCC12.9","RHCC13","RHCC14","RHCC15","RHCC16","RHCC17","RHCC18","RHCC18.1","RHCC19","RHCC20","RHCC21","RHCC22","RHCC23","RHCC24","RHCC25","RHCC26","RHCC27","RHCC28","RHCC29"), 
            Theme = c("Under-5 deaths",
                      "Under-5 hospitalizations",
                      "Access to testing and treatment",
@@ -2910,7 +2866,6 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                      "Rotary advocacy",
                      "Community Scorecard training and use",
                      "Community Scorecard training and use",
-                     "Rotary advocacy",
                      "Rotary monitoring",
                      "Rotary monitoring"),
            Description = c("Under-five mortality rate (under-5 deaths per 1,000 children under 5 on country tabs, excluding Nigeria)",
@@ -2951,7 +2906,6 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                            "# of advocacy activities covered by media",
                            "# of Rotary members trained on use of a Community Scorecard", 
                            "# of RHCC districts reporting on a Community Scorecard",
-                           "# of advocacy sessions carried out nationally to promote RHCC sustainability",
                            "# of quarterly monitoring meetings with implementing partners and the ministry conducted at national level",
                            "# of quarterly monitoring missions  conducted at provincial level"),
            `Numerator/Denominator` = c("",
@@ -2993,7 +2947,6 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                                        "",
                                        "",
                                        "",
-                                       "",
                                        ""), 
            Disaggregation = c("",
                               "disease",
@@ -3016,7 +2969,6 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                              "",
                              "disease/commodity",
                              "disease/commodity",
-                             "",
                              "",
                              "",
                              "",
@@ -3073,8 +3025,7 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                        "",
                        "",
                        "",
-                       "",
-                       "DRC",
+                       "MOZ/NGA/ZAM",
                        "DRC",
                        "DRC"),
              check.names = F) %>%
