@@ -1801,6 +1801,7 @@ ggplotly(line_plot(rhcc13, "% on time") +
 
 ```{r}
 ggplotly(line_plot(rhcc14, "% accurate") +
+           scale_x_date(date_breaks = "3 month", limits = c(as.Date("2025-10-01"),as.Date("2026-03-01")), date_labels =  "%m/%Y") +
     scale_y_continuous(lim = c(0,100)))
 ```
 
