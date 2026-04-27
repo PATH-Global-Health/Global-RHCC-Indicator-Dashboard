@@ -89,11 +89,11 @@ dumbbell_plot = function(dat, kpi, ylab){
            group_by(adm0) %>%
            mutate(survey = as.factor(row_number())) %>%
            ungroup()) + 
-    geom_point(aes(y = adm0, x = {{kpi}}, color = adm0, alpha = survey), size = 4) +
-    geom_line(aes(y = adm0, x = {{kpi}}, group = adm0)) +
-    scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
+    geom_point(aes(y = adm0, x = {{kpi}}, color = adm0), size = 4) + #, alpha = survey), size = 4) +
+#    geom_line(aes(y = adm0, x = {{kpi}}, group = adm0)) +
+#    scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
     scale_color_manual(values = palette) +
-    labs(color = "Country", x ="%", y = ylab, alpha = "Survey #") +
+    labs(color = "Country", x ="%", y = ylab) + #, alpha = "Survey #") +
     theme_minimal() +
     xlim(c(0,100))
 }
@@ -348,7 +348,7 @@ ggplotly(bar_time_plot(dat, rhcc15, "% complete"))
 
 ## Row {data-height="60"}
 
-**Caregivers of children under-5 were surveyed in the community at baseline and endline to ascertain their knowledge of iCCM services, the location of their CHW, and warning signs of childhood illnesses that necessitated immediate medical attention. Unlike in DRC and Nigeria, caregivers who were surveyed in Mozambique and Zambia were surveyed at health facilities.**
+**Caregivers of children under-5 were surveyed in the community at baseline to ascertain their knowledge of iCCM services, the location of their CHW, and warning signs of childhood illnesses that necessitated immediate medical attention. Unlike in DRC and Nigeria, caregivers who were surveyed in Mozambique and Zambia were surveyed at health facilities.**
 
 ## Row
 
@@ -392,9 +392,7 @@ ggplotly(bar_plot(dat, rhcc20, "# of volunteer hours contributed") +
 
 ```{r}
 ggplotly(bar_plot(dat, rhcc21, "# of Rotary entities involved in the country program") +
-           scale_y_continuous(lim = c(0,15), expand = c(0,0)) +    
-           scale_x_discrete(expand = c(1,1))
-)
+           scale_y_continuous(lim = c(0,15), expand = c(0,0)))
 ```
 
 ### **RHCC22** - \# of Formal Partnerships Established
@@ -499,11 +497,11 @@ dumbbell_plot = function(dat, kpi, ylab){
            group_by(`Health Zone`) %>%
            mutate(survey = as.factor(row_number())) %>%
            ungroup()) + 
-    geom_point(aes(y = `Health Zone`, x = {{kpi}}, color = `Health Zone`, alpha = survey), size = 4) +
+    geom_point(aes(y = `Health Zone`, x = {{kpi}}, color = `Health Zone`), size = 4) + #, alpha = survey), size = 4) +
     geom_line(aes(y = `Health Zone`, x = {{kpi}}, group = `Health Zone`)) +
-    scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
+#    scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
     scale_color_manual(values = palette) +
-    labs(fill = "Health Zone", x ="%", y = ylab, alpha = "Survey #", color = "Health Zone") +
+    labs(fill = "Health Zone", x ="%", y = ylab, color = "Health Zone") + #, alpha = "Survey #") +
     theme_minimal() +
     xlim(c(0,100))
 }
@@ -514,26 +512,26 @@ dumbbell_plot = function(dat, kpi, ylab){
 ### **RHCC1** - Under-5 *Malaria* Mortality per 1,000 Under 5 Population. Under 5 Population is being used as an alternative to the WHO live-births method of calculation to allow for up-to-date burden tracking from monthly surveillance data.
 
 ```{r}
+# kpi1_line_plot = function(kpi, ylab){
+#   ggplot(data = hz %>%
+#            filter(!is.na(rhcc1_m_n)) %>%
+#            group_by(date) %>%
+#            reframe(rhcc1_m = round(sum(rhcc1_m_n)/sum(rhcc1.1_d)*1000,1),
+#                    rhcc1_p = round(sum(rhcc1_p_n)/sum(rhcc1.1_d)*1000,1),
+#                    rhcc1_d = round(sum(rhcc1_d_n)/sum(rhcc1.1_d)*1000,1))) + 
+#     geom_line(aes(x = date, y = {{kpi}}), color = "#FF0000", size = 1.2) +
+#     geom_point(aes(x = date, y = {{kpi}}), color = "#FF0000", size = 1.2) +
+#     scale_x_date(date_breaks = "1 year", limits = c(as.Date("2021-01-01"),as.Date("2025-01-01")), date_labels =  "%m/%Y") +
+#     theme_minimal() +
+#     theme(strip.text = element_text(size = 10),
+#           axis.text.x = element_text(size = 6),
+#           plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm")) +
+#     labs( x ="Date", y = ylab)
+# }
+
 ggplotly(line_plot(rhcc1_m, "Under-5 deaths per 1,000 children under 5") +     
            scale_x_date(date_breaks = "1 year", limits = c(as.Date("2021-01-01"),as.Date("2025-01-01")), date_labels =  "%m/%Y") +
-            ylim(c(0,6))) 
-  # |>
-  # htmlwidgets::onRender("
-  #   function(el) {
-  #     el.on('plotly_hover', function(data) {
-  #       var pointIndex = data.points[0].pointIndex;
-  #       var traceIndex = data.points[0].curveNumber;
-  #       var colors = new Array(el.data[0].x.length).fill('#c4c0c2');
-  #       colors[pointIndex] = 'gray'; // paint all points gray except the hovered one
-  #       Plotly.restyle(el.id, {'marker.color': [colors], 'marker.line.width': 0}, [traceIndex]);
-  #     });
-  #     el.on('plotly_unhover', function(data) {
-  #       // paint all points black
-  #       var traceIndex = data.points[0].curveNumber;
-  #       Plotly.restyle(el.id, {'marker.color': 'black', 'marker.line.width': 0}, [traceIndex]);
-  #     });
-  #   }
-  # ")
+           ylim(c(0,6))) 
 ```
 
 ## Row 
@@ -874,7 +872,7 @@ ggplotly(line_plot(rhcc15, "% on time") +
 
 ## Row {data-height="60"}
 
-**Caregivers of children under-5 were surveyed in the community at baseline and endline to ascertain their knowledge of iCCM services, the location of their CHW, and warning signs of childhood illnesses that necessitated immediate medical attention**
+**Caregivers of children under-5 were surveyed in the community at baseline to ascertain their knowledge of iCCM services, the location of their CHW, and warning signs of childhood illnesses that necessitated immediate medical attention**
 
 ## Row
 
@@ -1580,11 +1578,11 @@ dumbbell_plot = function(dat, kpi, ylab){
            group_by(State) %>%
            mutate(survey = as.factor(row_number())) %>%
            ungroup()) + 
-    geom_point(aes(y = State, x = {{kpi}}, color = State, alpha = survey), size = 4) +
+    geom_point(aes(y = State, x = {{kpi}}, color = State), size = 4) + #, alpha = survey), size = 4) +
     geom_line(aes(y = State, x = {{kpi}}, group = State)) +
-    scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
+#    scale_alpha_manual(values = c("1" = 1,"2" = 0.7,"3" = 0.4)) +
     scale_color_manual(values = palette) +
-    labs(fill = "State", x ="%", y = ylab, alpha = "Survey #", color = "State") +
+    labs(fill = "State", x ="%", y = ylab, color = "State") + #, alpha = "Survey #") +
     theme_minimal() +
     xlim(c(0,100))
 }
@@ -1814,7 +1812,7 @@ ggplotly(line_plot(rhcc15, "% complete") +
 
 ## Row {data-height="60"}
 
-**Caregivers of children under-5 were surveyed in the community at baseline and endline to ascertain their knowledge of iCCM services, the location of their CHW, and warning signs of childhood illnesses that necessitated immediate medical attention**
+**Caregivers of children under-5 were surveyed in the community at baseline to ascertain their knowledge of iCCM services, the location of their CHW, and warning signs of childhood illnesses that necessitated immediate medical attention**
 
 ## Row
 
@@ -1848,10 +1846,10 @@ ggplotly(
             filter(row_number()==n()) %>%
             dplyr::select(year,rhcc19_rotarian,rhcc19_nonrotarian) %>%
             pivot_longer(cols = c(rhcc19_rotarian, rhcc19_nonrotarian), names_to = "Volunteer type", names_prefix = "rhcc19_", values_to = "rhcc19") %>%
-            mutate(`Volunteer type` = factor(`Volunteer type`, levels = c("rotarian", "nonrotarian"), labels = c("Rotarian", "Non-Rotarian")))) +
+            mutate(`Volunteer type` = factor(`Volunteer type`, levels = c("rotarian", "nonrotarian"), labels = c("Rotary member", "Rotaractor")))) +
     geom_bar(aes(y = rhcc19, x = year, alpha = `Volunteer type`),
              position = "stack", stat = "identity", fill = "#F2AD00") +
-    scale_alpha_manual(values = c("Rotarian" = 1, "Non-Rotarian" = 0.7)) +
+    scale_alpha_manual(values = c("Rotary member" = 1, "Rotaractor" = 0.7)) +
     labs(fill = "", x ="Year", y = "# of volunteers engaged", alpha = "Volunteer type") +
     scale_x_continuous(expand = c(0.3,0.3), breaks = c(1,2)) +
     theme_minimal()
@@ -1998,7 +1996,7 @@ ggplotly(
                          names_pattern ="(.+)_(.+)_(.+)", 
                          values_to = "rhcc26") %>%
             mutate(Type = factor(Type, levels = c("rotarians","nonmembers","rotaractors"), 
-                                   labels = c("Rotarians", "Non-members","Rotaractors")),
+                                   labels = c("Rotary member", "Non-members","Rotaractors")),
                    Gender = factor(Gender, levels = c("m","f"), 
                                    labels = c("Male", "Female")),
                    year = ifelse(year==1,"Year 1", "Year 2"))) +
@@ -2458,45 +2456,7 @@ ggplot() +
 
 ## Row
 
-### **RHCC11** - % of Facilities That Had No Stock-outs of *Malaria* Commodities During the Reporting Period
-
-```{r}
-# ggplotly(line_plot(dat, date, rhcc12_m, "% of CHWs with no stock-outs") +
-#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC11** - % of Facilities That Had No Stock-outs of *Pneumonia* Commodities During the Reporting Period
-
-```{r}
-# ggplotly(line_plot(dat, date, rhcc12_p, "% of CHWs with no stock-outs") +
-#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC11** - % of Facilities That Had No Stock-outs of *Diarrhoea* Commodities During the Reporting Period
-
-```{r}
-# ggplotly(line_plot(dat, date, rhcc12_d, "% of CHWs with no stock-outs") +
-#            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-## Row
-
-### **RHCC12** - % of CHWs with No Stock-outs of Key Medicines and Diagnostics in the Past Month
+### **RHCC11** - % of Health Facilities with No Stock-outs of Key iCCM Medicines and Diagnostics in the Past Month
 
 ```{r}
 ggplotly(commodity_dat %>%
@@ -2518,21 +2478,21 @@ ggplotly(commodity_dat %>%
            mutate(percent_act_stocked_out = round(n_act_stockouts/n_facilities * 100, 2),
                   ACT = 100-percent_act_stocked_out,
                   percent_amoxyl_stocked_out = round(n_amoxyl_stockouts/n_facilities * 100, 2),
-                  Amoxyl = 100-percent_amoxyl_stocked_out,
+                  Amoxil = 100-percent_amoxyl_stocked_out,
                   percent_zinc_stocked_out = round(n_zinc_stockouts/n_facilities * 100, 2),
                   Zinc = 100-percent_zinc_stocked_out,
                   percent_ors_stocked_out = round(n_ors_stockouts/n_facilities * 100, 2),
                   ORS = 100-percent_ors_stocked_out,
                   percent_panadol_stocked_out = round(n_panadol_stockouts/n_facilities * 100, 2),
                   Panadol = 100-percent_panadol_stocked_out) %>%
-           pivot_longer(cols = c(ACT, Amoxyl, Zinc,
+           pivot_longer(cols = c(ACT, Amoxil, Zinc,
                                  ORS, Panadol),
                         names_to = "stat", values_to = "pct") %>%
            ggplot() +
            geom_line(aes(x = period, y = pct, color = district)) +
            scale_color_manual(values = cols) +
            scale_y_continuous(lim = c(0,100), expand = c(0,0)) +
-           labs(x = "Date", y = "% of facilities with no stock-out", color = "District") +
+           labs(x = "Date", y = "% of facilities with no stock-outs", color = "District") +
            scale_x_date(date_breaks = "3 months", limits = c(as.Date("2025-06-01"),as.Date("2026-01-01")), date_labels =  "%m/%Y") +
   
            theme_minimal() +
@@ -2540,6 +2500,18 @@ ggplotly(commodity_dat %>%
                  axis.text.x = element_text(size = 6),
                  plot.margin = margin(0.5, 0.5, 0.5, 0.5, "cm")) +
            facet_wrap(vars(stat), nrow = 1))
+```
+
+## Row
+
+### **RHCC12** - % of CHWs with No Stock-outs of Key iCCM Medicines and Diagnostics in the Past Month
+
+```{r}
+ggplot() +
+  annotate("label", x = 1, y = 1, 
+           label = "Data Collection/Processing Underway",
+           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
+  theme_void()
 ```
 
 ## Row
@@ -2597,7 +2569,7 @@ ggplot() +
 ## Row {data-height="50"}
 
 For the following indicators, caregivers will be surveyed during upcoming health facility visits.
-Not all facilities have collected the requisite number of survey responses to meet their calculated sample sizes. Raw district-level proportions are not yet fully representative of district-wide reality per the project's sampling plan. Baseline data are currently shown as single points. Future iterations will compare these data with an endline survey to demonstrate progress.
+Not all facilities have collected the requisite number of survey responses to meet their calculated sample sizes. Raw district-level proportions are not yet fully representative of district-wide reality per the project's sampling plan. Baseline data are currently shown as single points.
 
 ## Row
 
@@ -2670,8 +2642,8 @@ rotary_kpi_cum <- read_excel("~/Library/CloudStorage/Box-Box/MNTD/Projects/RHCC 
 
 ggplotly(rotary_kpi_cum %>%
   dplyr::select(rhcc_kpi, description_number_of, cumul_ytd,
-                Rotarian = rotarian, `Non-Rotarian` = rotaractor) %>%
-  pivot_longer(cols = c("Rotarian", "Non-Rotarian"), names_to = "Type",
+                `Rotary member` = rotarian, Rotaractor = rotaractor) %>%
+  pivot_longer(cols = c("Rotary member", "Rotaractor"), names_to = "Type",
                values_to = "Count") %>%
   filter(rhcc_kpi == 19) %>%
   mutate(stat = "Cumulative YTD") %>%
@@ -2679,7 +2651,7 @@ ggplotly(rotary_kpi_cum %>%
     geom_col(aes(x = stat, y = Count, alpha = Type),
              fill = "#5BBCD6") +
     scale_alpha_manual(values = c(0.9, 0.5),
-                       breaks = c("Rotarian", "Non-Rotarian")) +
+                       breaks = c("Rotary member", "Rotaractor")) +
   labs(x = "", y = "# of volunteers engaged", alpha = "Volunteer type") +
     scale_x_discrete(expand = c(0.5,0.5)) +
     theme_minimal())
@@ -2690,8 +2662,8 @@ ggplotly(rotary_kpi_cum %>%
 ```{r}
 ggplotly(rotary_kpi_cum %>%
   dplyr::select(rhcc_kpi, description_number_of, cumul_ytd,
-                Rotarian = rotarian, `Non-Rotarian` = rotaractor) %>%
-  pivot_longer(cols = c("Rotarian", "Non-Rotarian"), names_to = "Type",
+                `Rotary member` = rotarian, Rotaractor = rotaractor) %>%
+  pivot_longer(cols = c("Rotary member", "Rotaractor"), names_to = "Type",
                values_to = "Count") %>%
   filter(rhcc_kpi == 20) %>%
     mutate(stat = "Cumulative YTD") %>%
@@ -2699,7 +2671,7 @@ ggplotly(rotary_kpi_cum %>%
     geom_col(aes(x = stat, y = Count, alpha = Type),
              fill = "#5BBCD6") +
     scale_alpha_manual(values = c(0.9, 0.5),
-                       breaks = c("Rotarian", "Non-Rotarian")) +
+                       breaks = c("Rotary member", "Rotaractor")) +
   labs(x = "", y = "# of volunteer hours", alpha = "Volunteer type") +
     scale_x_discrete(expand = c(0.5,0.5)) +
     theme_minimal())
