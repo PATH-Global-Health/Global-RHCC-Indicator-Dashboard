@@ -253,14 +253,6 @@ ggplotly(line_plot(dat %>% filter(date>"2025-05-01"), date, rhcc9, "% of sick ch
            scale_y_continuous(lim = c(0,100), expand = c(0,0)))
 ```
 
-### **RHCC9.1** - % of Sick Children Referred by CHWs Who are Received at Referral Facility
-
-```{r}
-ggplotly(line_plot(dat, date, rhcc9.1, "% of referrals received")+
-           scale_y_continuous(lim = c(0,100), expand = c(0,0)) +     
-           scale_x_date(date_breaks = "1 month", limits = c(as.Date("2025-12-01"),as.Date("2026-02-01")), date_labels =  "%m/%Y"))
-```
-
 ## Row
 
 ### **RHCC10** - % of CHWs Trained in iCCM Who Are Providing iCCM 1 Year After Initial Training
@@ -648,8 +640,6 @@ ggplot() +
   theme_void()
 ```
 
-## Row {data-height="60"}
-
 ## Row
 
 ### **RHCC3** - \# of CHWS Trained in iCCM.
@@ -742,16 +732,6 @@ ggplot() +
 ```{r}
 # ggplotly(line_plot(rhcc9, "% of sick child cases referred") +
 #            scale_y_continuous(lim = c(-2,50)))
-ggplot() +
-  annotate("label", x = 1, y = 1, 
-           label = "Data Collection/Processing Underway",
-           fill = "#ffe178", color = "black", size = 6, label.padding = unit(1, "lines")) +
-  theme_void()
-```
-
-### **RHCC9.1** - % of Sick Children Referred by CHWs Who Are Received at Referral Facility
-
-```{r}
 ggplot() +
   annotate("label", x = 1, y = 1, 
            label = "Data Collection/Processing Underway",
@@ -959,10 +939,22 @@ ggplotly(bar_plot(drc, rhcc24, "# of formal partnerships established") + ylim(c(
 ggplotly(bar_plot(drc, rhcc25, "# of advocacy activities covered by media") + ylim(c(0,5)))
 ```
 
+## Row
+
 ### **RHCC26** - \# of Rotary Members Trained on Use of a Community Scorecard
 
 ```{r}
 ggplotly(bar_plot(drc, rhcc26, "# of Rotary members trained on use of a community scorecard") + ylim(c(0,15)) + theme(axis.title = element_text(size = 9)))
+```
+
+### **RHCC27** - \# of RHCC Districts Reporting on a Community Scorecard
+
+```{r}
+ggplot() +
+  annotate("label", x = 1, y = 1,
+           label = "Data Collection/Processing Underway",
+           fill = pathcolors$PtlYellow, color = "black", size = 6, label.padding = unit(1, "lines")) +
+  theme_void()
 ```
 
 ## Row
@@ -2800,7 +2792,7 @@ ggplotly(rotary_kpi_cum %>%
 Definitions for each KPI, along with thematic area, the numerator and denominator used to calculate the KPI, and the level of disaggregation, are shown below. For KPIs that are specific to a subset of countries, the relevant countries are noted.
 
 ```{r}
-data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC2.4","RHCC2.5","RHCC2.6","RHCC3","RHCC3.1","RHCC4","RHCC5","RHCC6","RHCC7","RHCC8","RHCC9","RHCC9.1","RHCC10","RHCC11","RHCC12","RHCC12.9","RHCC13","RHCC14","RHCC15","RHCC16","RHCC17","RHCC18","RHCC18.1","RHCC19","RHCC20","RHCC21","RHCC22","RHCC23","RHCC24","RHCC25","RHCC26","RHCC27","RHCC28","RHCC29"), 
+data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC2.4","RHCC2.5","RHCC2.6","RHCC3","RHCC3.1","RHCC4","RHCC5","RHCC6","RHCC7","RHCC8","RHCC9","RHCC10","RHCC11","RHCC12","RHCC12.9","RHCC13","RHCC14","RHCC15","RHCC16","RHCC17","RHCC18","RHCC18.1","RHCC19","RHCC20","RHCC21","RHCC22","RHCC23","RHCC24","RHCC25","RHCC26","RHCC27","RHCC28","RHCC29"), 
            Theme = c("Under-5 deaths",
                      "Under-5 hospitalizations",
                      "Access to testing and treatment",
@@ -2817,7 +2809,6 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                      "Number of CHW supervisors trained in iCCM with catchment CHWs",
                      "Presence of regular supervision and quality assurance",
                      "Presence of regular supervision and quality assurance",
-                     "Strength of service delivery and referral system",
                      "Strength of service delivery and referral system",
                      "CHW retention",
                      "Consistent Health Facility supply of malaria and non-malaria commodities",
@@ -2858,7 +2849,6 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                            "% of CHWs who received at least one supervisory contact in the prior month (where registers were reviewed)",
                            "% of CHWs who correctly count respiratory rate to diagnose ARI",
                            "% of sick child cases recommended for referral by CHW",
-                           "% of sick children referred by CHWs who are received at referral facility",
                            "% of CHWs trained in iCCM who are providing iCCM 1 year after initial training",
                            "% of health facilities with no stock-outs of key iCCM medicines and diagnostics in the past month",
                            "% of CHWs who with no stock-outs of key iCCM medicines and diagnostics in the past month",
@@ -2898,7 +2888,6 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                                        "# of CHWs who received at least one administrative supervisory contact in the prior month during which registers and/or reports were reviewed/# of CHWs trained and deployed for iCCM (or # interviewed if survey used for measurement)",
                                        "# of CHWs who correctly count the respiratory rate of live case, supervisor, community infant, or video/# of CHWs assessed",
                                        "# of sick children seen by CHWs who are recommended for referral/# of sick children seen by CHWs",
-                                       "# of sick children referred by CHWs who are received at referral facility/# of sick children seen by CHWs who are recommended for referral",
                                        "# of CHWs providing iCCM services 1 year after initial iCCM training/# of CHWs in the initial iCCM training",
                                        "# of health facilities with no stock-outs of key iCCM medicines or diagnostics in the past month/# of health facilities assessed",
                                        "# of CHWs in project areas with no stock-outs of key iCCM medicines or diagnostics in the past month/# of CHWs assessed",
@@ -2935,7 +2924,6 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                              "gender",
                              "",
                              "gender",
-                             "",
                              "",
                              "",
                              "",
@@ -2978,7 +2966,6 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                        "",
                        "",
                        "",
-                       "DRC",
                        "",
                        "",
                        "",
@@ -2998,7 +2985,7 @@ data.frame(KPI = c("RHCC1","RHCC1.1","RHCC2","RHCC2.1","RHCC2.2","RHCC2.3","RHCC
                        "",
                        "",
                        "",
-                       "MOZ/NGA/ZAM",
+                       "",
                        "DRC",
                        "DRC"),
              check.names = F) %>%
