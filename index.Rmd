@@ -984,13 +984,13 @@ ggplot() +
 ```{r}
 setwd("~/Library/CloudStorage/Box-Box/") #UPDATE HERE AND FIRST CHUNK FOR EACH COUNTRY TAB
 
-setwd("MNTD/Projects/RHCC (Rotary)/Mozambique/")
+setwd("MNTD/Projects/RHCC (Rotary)/Dashboard/data/raw/Mozambique/")
 
 # Load Data
-sheet_names <- excel_sheets("data/Reporte Mensal de KPIs do RHCC.xlsx")
-all_sheets_list <- excel_sheets("data/Reporte Mensal de KPIs do RHCC.xlsx") %>%
+sheet_names <- excel_sheets("Reporte Mensal de KPIs do RHCC.xlsx")
+all_sheets_list <- excel_sheets("Reporte Mensal de KPIs do RHCC.xlsx") %>%
   set_names() %>%
-  map(~ read_excel(path = "data/Reporte Mensal de KPIs do RHCC.xlsx", sheet = .x))
+  map(~ read_excel(path = "Reporte Mensal de KPIs do RHCC.xlsx", sheet = .x))
 
 selected_list <- map(all_sheets_list, ~select(.x, `What we are trying to measure`:Pneumonia))
 
@@ -1004,14 +1004,14 @@ combined_df <- combined_df %>%
   mutate(period = parse_date_time(sheet_name_column, orders = "b y", quiet = TRUE))
 
 #Bring in the disaggregated district data
-district_aps_dat <- read_csv("data/district_aps_raw_data.csv",
+district_aps_dat <- read_csv("district_aps_raw_data.csv",
                              locale=locale(encoding="latin1")) %>%
   janitor::clean_names() %>%
   mutate(period = parse_date_time(mes, orders = "b-y", quiet = TRUE))
 
 
 #Bring in disaggregated case data
-district_cases_dat <- read_csv("data/district_aps_total_cases.csv") %>%
+district_cases_dat <- read_csv("district_aps_total_cases.csv") %>%
   janitor::clean_names() %>%
   rename(district = row_labels) %>%
   mutate(period = parse_date_time(month, orders = "y-b", quiet = TRUE))
